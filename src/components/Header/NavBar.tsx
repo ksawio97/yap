@@ -18,11 +18,11 @@ export default function NavBar() {
         { text: "Settings", path: "/settings", pattern: /^\/settings/},
     ];
     return (
-        <nav className="h-full content-center">
+        <nav className="h-full content-center w-fit">
             <ul className="h-full flex flex-row gap-4 items-center">
                 {paths.map(({text, path, pattern}) => 
-                    (<Link href={path} passHref>
-                        <li key={path} className={`p-3 text-gray-300 hover:text-white hover:bg-slate-700 rounded-lg inline${IsActive(currPath, pattern)}`}>
+                    (<Link key={"NavBar-Link" + path} href={path} passHref>
+                        <li key={"NavBar-li"+path} className={`p-3 text-gray-300 hover:text-white hover:bg-slate-700 rounded-lg inline${IsActive(currPath, pattern)}`}>
                             {text}
                         </li>
                     </Link>)
