@@ -30,24 +30,25 @@ export default function Header() {
                     <LoginForm></LoginForm>
                 </FloatingBlock>
             : <></>}
-            <header className="w-full h-24 bg-gray-900 px-16 flex flex-row content-center items-center">
-                {/* items next to each other on the left */}
-                <div className="w-full h-full flex flex-row">
-                    <Image
-                        src="/logo.png"
-                        width={100}
-                        height={100}
-                        className="select-none p-4"
-                        alt="Website logo" />
-                    <NavBar></NavBar>
-                </div>
+            <div className="h-24">
+                <header className="w-full h-24 bg-gray-900 px-16 flex flex-row content-center items-center fixed top-0">
+                    {/* items next to each other on the left */}
+                    <div className="w-full h-full flex flex-row">
+                        <Image
+                            src="/logo.png"
+                            width={100}
+                            height={100}
+                            className="select-none p-4"
+                            alt="Website logo" />
+                        <NavBar></NavBar>
+                    </div>
 
-                <button type="button" className="w-28 h-12 bg-amber-500 rounded-lg" 
-                    onClick={() => setShowForm(true)}>
-                    Log In
-                </button>
-            </header>
+                    <button type="button" className="w-28 h-12 bg-amber-500 rounded-lg" 
+                        onClick={() => setShowForm(true)}>
+                        Log In
+                    </button>
+                </header>
+            </div>
         </>
-
     )
 }

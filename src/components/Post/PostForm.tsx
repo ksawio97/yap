@@ -1,20 +1,30 @@
 'use client'
 import { memo, useRef, useState } from "react";
 
+
+// if CircleChart is under this% it won't show up
+const minimumChartPercent = 5;
 const CircleChart = memo(function CircleChart({ percent }: {percent: number}) {
     return (
         <>
-            <style jsx>{`
-                        .circle-chart {
-                            border-radius: 50%;
-                            border: 1px solid white;
-                            background: conic-gradient(#b91c1c calc(${percent}%),#0000 0);
-                        }
-                    `}</style>
-            <span className="w-9 h-9 circle-chart"></span>
+            {percent < minimumChartPercent ? <></> :
+                <>
+                    <style jsx>{`
+                                .circle-chart {
+                                    border-radius: 50%;
+                                    border: 1px solid white;
+                                    background: conic-gradient(#b91c1c calc(${percent}%),#0000 0);
+                                }
+                            `}</style>
+                    <span className="w-9 h-9 circle-chart"></span>
+                </> 
+            }
         </>
     )
-});
+}, (prev, next) => 
+    // props are equal or they are both under 20% (no need to change chart)
+        prev.percent === next.percent || (prev.percent < minimumChartPercent && next.percent < minimumChartPercent)
+);
 
 export default function PostForm() {
     const charsLimit = 4_000;
@@ -41,7 +51,7 @@ export default function PostForm() {
     
     // TODO on form submit replace multiple new lines with just one
     return (
-        <form className="w-full flex flex-col divide-y divide-opacity-25 space-y-4 h-fit">
+        <form className="w-full flex flex-col divide-y divide-slate-400 space-y-4 h-fit pr-6">
             <textarea className="bg-transparent resize-none"
                 placeholder="Post Content"
                 ref={textAreaHandle}
