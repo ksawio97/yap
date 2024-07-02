@@ -2,7 +2,7 @@
 
 import { ReactNode, memo } from "react";
 
-const HoverIcon = memo(function HoverIcon({color, hoverColor, icon}: {color: string, hoverColor: string, icon: ReactNode}) {
+const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon}: {color: string, hoverColor: string, content: string, icon: ReactNode}) {
     return (
         <>
             <style jsx>{`
@@ -19,7 +19,7 @@ const HoverIcon = memo(function HoverIcon({color, hoverColor, icon}: {color: str
                 <div className="w-fit h-fit shadow">
                     {icon}
                 </div>
-                <p color={color}>472</p>
+                <p color={color}>{content}</p>
             </div>
         </>
     );

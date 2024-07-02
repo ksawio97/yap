@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+// TODO modify this model so it shows witch posts comment on it and what(optional) this post comments
+model Post {
+  id        String   @default(cuid()) @id
+  content   String   @db.VarChar(4000)
+  published DateTime @default(now())
+  likes     Int
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+// TODO add user profile picture
+model User {
+  id            String       @default(cuid()) @id
+  name          String?   @db.VarChar(36)
+  email         String?   @unique
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  posts         Post[]
+  @@map(name: "users")
+}
