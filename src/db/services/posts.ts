@@ -13,6 +13,7 @@ export async function getPosts(limit: number = 50) {
             published: 'desc'
         }
       });
+      
     return posts as PostModel[];
 }
 
