@@ -35,6 +35,7 @@ export default function Header() {
                     {/* items next to each other on the left */}
                     <div className="w-full h-full flex flex-row">
                         <Image
+                            priority
                             src="/logo.png"
                             width={100}
                             height={100}

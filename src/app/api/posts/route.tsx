@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getPosts } from '@/yap/db/services/posts'
+import { getParentPosts } from '@/yap/db/services/posts'
 
 export async function GET() {
-  const posts = await getPosts(); // Adjust accordingly
+  const posts = await getParentPosts(); // Adjust accordingly
   return NextResponse.json(posts);
 }

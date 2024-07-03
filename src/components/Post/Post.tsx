@@ -5,8 +5,11 @@ import Share from "./Icons/Share";
 import Comment from "./Icons/Comment";
 import PostModel from "@/yap/db/models/PostModel";
 import timeAgo from "@/yap/libs/timeAgo";
+import { useRouter } from "next/navigation";
 
 export default function Post({ post }: {post: PostModel}) {
+    const router = useRouter();
+    
     return (
         <article className="w-full flex flex-row">
             <div className="w-14 p-2">
@@ -21,8 +24,13 @@ export default function Post({ post }: {post: PostModel}) {
                 <p className="p-1">{post.content}</p>
                 <div className="grid grid-cols-3 px-8 py-2 text-gray-500">
                     <HoverIcon color="#64748b" hoverColor="red" content={post.likes.toString()} icon={<Like/>}></HoverIcon>
-                    <HoverIcon color="#64748b" hoverColor="blue" content={"0"} icon={<Comment/>}></HoverIcon>
-                    <HoverIcon color="#64748b" hoverColor="orange" content={""} icon={<Share/>}></HoverIcon>
+                    <HoverIcon color="#64748b" hoverColor="blue" content={post._count.replies.toString()} icon={<Comment/>} handleOnClick={() => {
+                        router.push(`/post/${post.id}`);
+                    }}></HoverIcon>
+                    <HoverIcon color="#64748b" hoverColor="orange" content={"Share"} icon={<Share/>} handleOnClick={() => {
+                        // TODO ADD copy to Clipboard behavior
+                    }
+                    }></HoverIcon>
                 </div>
             </div>
         </article>

@@ -1,13 +1,16 @@
 type PostModel = {
-        author: {
-            name: string | null;
-        }
-        id: string;
-        content: string;
-        // this date's being read from server as string, not date that's a bug!
-        published: Date;
-        likes: number;
-        authorId: string;
+    author: {
+        name: string | null;
+    };
+    _count: {
+        replies: number;
+    };
+    id: string;
+    content: string;
+    published: Date;
+    likes: number;
+    authorId: string;
+    parentId: string | null;
 }
 
 export default PostModel;

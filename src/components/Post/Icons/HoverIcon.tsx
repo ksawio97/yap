@@ -2,7 +2,7 @@
 
 import { ReactNode, memo } from "react";
 
-const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon}: {color: string, hoverColor: string, content: string, icon: ReactNode}) {
+const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, handleOnClick}: {color: string, hoverColor: string, content: string, icon: ReactNode, handleOnClick?: () => void}) {
     return (
         <>
             <style jsx>{`
@@ -15,7 +15,7 @@ const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon}: {c
                     border-radius: 50%;
                 }
             `}</style>
-            <div className="flex flex-row gap-1 hover-icon w-fit p-2 select-none">
+            <div className="flex flex-row gap-1 hover-icon w-fit p-2 select-none" onClick={handleOnClick}>
                 <div className="w-fit h-fit shadow">
                     {icon}
                 </div>

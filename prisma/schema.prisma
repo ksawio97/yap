@@ -7,7 +7,7 @@ datasource db {
   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
-// TODO modify this model so it shows witch posts comment on it and what(optional) this post comments
+
 model Post {
   id        String   @default(cuid()) @id
   content   String   @db.VarChar(4000)
@@ -15,11 +15,15 @@ model Post {
   likes     Int
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
+
+  parentId String? @map("parent_id")
+  parent Post? @relation("PostReplies", fields: [parentId], references: [id])
+  replies Post[] @relation("PostReplies")
 }
 
 // TODO add user profile picture
 model User {
-  id            String       @default(cuid()) @id
+  id            String    @default(cuid()) @id
   name          String?   @db.VarChar(36)
   email         String?   @unique
   createdAt     DateTime  @default(now()) @map(name: "created_at")
