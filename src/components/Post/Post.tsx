@@ -24,7 +24,7 @@ export default function Post({ post }: {post: PostModel}) {
                 <p className="p-1">{post.content}</p>
                 <div className="grid grid-cols-3 px-8 py-2 text-gray-500">
                     <HoverIcon color="#64748b" hoverColor="red" content={post.likes.toString()} icon={<Like/>}></HoverIcon>
-                    <HoverIcon color="#64748b" hoverColor="blue" content={post._count.replies.toString()} icon={<Comment/>} handleOnClick={() => {
+                    <HoverIcon color="#64748b" hoverColor="blue" content={post._count ? post._count.replies.toString() : '0' } icon={<Comment/>} handleOnClick={() => {
                         router.push(`/post/${post.id}`);
                     }}></HoverIcon>
                     <HoverIcon color="#64748b" hoverColor="orange" content={"Share"} icon={<Share/>} handleOnClick={() => {

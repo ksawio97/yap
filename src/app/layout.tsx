@@ -20,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header></Header>
-        {children}
+        <div className="inline-grid w-full p-8">
+          {children}
+        </div>
       </body>
     </html>
   );

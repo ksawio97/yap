@@ -68,9 +68,10 @@ export async function getPostById(postId: string) {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
-          console.log('Post not found');
+        console.log('Post not found');
+      } else {
+        console.log(e);
       }
-      console.log('server error ' + e)
       return null
     }
     
