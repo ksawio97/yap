@@ -1,8 +1,9 @@
 'use client'
 
-import { ReactNode, memo } from "react";
+import { memo } from "react";
+import HoverIconProps from "../Props/HoverIconProps";
 
-const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, handleOnClick}: {color: string, hoverColor: string, content: string, icon: ReactNode, handleOnClick?: () => void}) {
+const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, handleOnClick}: HoverIconProps) {
     return (
         <>
             <style jsx>{`

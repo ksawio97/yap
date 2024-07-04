@@ -6,6 +6,8 @@ import Comment from "./Icons/Comment";
 import PostModel from "@/yap/db/models/PostModel";
 import timeAgo from "@/yap/libs/timeAgo";
 import { useRouter } from "next/navigation";
+import getURL from "@/yap/libs/getUrl";
+import HoverIconWithPopup from "./Icons/HoverIconWithPopup";
 
 export default function Post({ post }: {post: PostModel}) {
     const router = useRouter();
@@ -27,10 +29,19 @@ export default function Post({ post }: {post: PostModel}) {
                     <HoverIcon color="#64748b" hoverColor="blue" content={post._count ? post._count.replies.toString() : '0' } icon={<Comment/>} handleOnClick={() => {
                         router.push(`/post/${post.id}`);
                     }}></HoverIcon>
-                    <HoverIcon color="#64748b" hoverColor="orange" content={"Share"} icon={<Share/>} handleOnClick={() => {
-                        // TODO ADD copy to Clipboard behavior
-                    }
-                    }></HoverIcon>
+
+
+
+                    <HoverIconWithPopup color="#64748b" hoverColor="orange" content="Share" icon={<Share/>}
+                        popupProps={{
+                            message: "Copied to clipboard!",
+                            color: "white",
+                            backgroundColor: "rgb(245 158 11 / var(--tw-bg-opacity))"
+                        }}
+                        handleOnHoverIconClick={() => {
+                            navigator.clipboard.writeText(getURL(`/post/${post.id}`));
+                        }}/>
+                    
                 </div>
             </div>
         </article>

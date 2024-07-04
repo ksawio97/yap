@@ -3,11 +3,12 @@
 import PostForm from "@/yap/components/Post/PostForm";
 import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import PostList from "@/yap/components/Post/PostList";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PostModel from "../db/models/PostModel";
+import Loading from "../components/Loading";
 
 export default function Home() {
-  const [posts, setPosts] = useState<PostModel[]>([]);
+  const [posts, setPosts] = useState<PostModel[] | undefined>();
   useEffect(() => {
     (async () => {
       fetch('api/posts')
@@ -31,7 +32,10 @@ export default function Home() {
           </div>
           <PostForm></PostForm>
         </div>
-        <PostList posts={posts}></PostList>
+        { !posts ? <Loading/> :
+          <PostList posts={posts}></PostList>
+        }
+        
       </main>
   );
 }
