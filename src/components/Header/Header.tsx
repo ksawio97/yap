@@ -1,35 +1,15 @@
 'use client'
 
 import NavBar from "./NavBar";
-import { useEffect, useState } from "react";
 import FloatingBlock from "./FloatingBlock";
 import LoginForm from "./LoginForm";
 import Image from "next/image";
-import { redirect, usePathname } from "next/navigation";
-
-// /login path automaticly opens form
-function isLoginPage(currPath: string) : Boolean {
-    return currPath.match(/^\/login$/) != null;
-}
+import goToSignIn from "@/yap/app/actions/goToSignIn";
 
 export default function Header() {
-    const currPath = usePathname();
-    const [showForm, setShowForm] = useState(isLoginPage(currPath));
-
-    useEffect(() => {
-        // login form closed on /login page, redirect to home page
-        if (!showForm && currPath.match(/^\/login$/))
-            redirect("/");
-    }, [showForm]);
-
 
     return (
         <>
-            {showForm ? 
-                <FloatingBlock handleClose={() => { setShowForm(false) }}>
-                    <LoginForm></LoginForm>
-                </FloatingBlock>
-            : <></>}
             <div className="h-24">
                 <header className="w-full h-24 bg-gray-900 px-16 flex flex-row content-center items-center fixed top-0">
                     {/* items next to each other on the left */}
@@ -43,11 +23,11 @@ export default function Header() {
                             alt="Website logo" />
                         <NavBar></NavBar>
                     </div>
-
-                    <button type="button" className="w-28 h-12 bg-amber-500 rounded-lg" 
-                        onClick={() => setShowForm(true)}>
-                        Log In
-                    </button>
+                    <form action={goToSignIn}>
+                        <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg">
+                            Sign In
+                        </button>
+                    </form>
                 </header>
             </div>
         </>
