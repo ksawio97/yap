@@ -4,16 +4,17 @@ import Post from "@/yap/components/Post/Post";
 import PostList from "@/yap/components/Post/PostList";
 import PostModel from "@/yap/db/models/PostModel";
 import Loading from "@/yap/components/Loading";
-import { notFound, useParams } from "next/navigation"
-import { Suspense, useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
 import { useRouter } from "next/navigation";
+import { getAdditionalPostDetailedItemsList } from "@/yap/components/getAdditionalItemsList";
 
 export default function PostDetails() {
     const router = useRouter();
     
     const { id } = useParams();
-    const [post, setPost] = useState<PostModel | undefined>();
+    const [post, setPost] = useState<PostDetailedModel | undefined>();
     const [replies, setReplies] = useState<PostModel[] | undefined>();
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export default function PostDetails() {
                     if (response == undefined)
                         return;
                     const postDetails = response as PostDetailedModel;
-                    setPost(postDetails as PostModel); 
+                    setPost(postDetails as PostDetailedModel); 
                     setReplies(postDetails.replies);
                 })
                 .catch(err => console.error(err));
@@ -42,7 +43,7 @@ export default function PostDetails() {
             {!post || !replies ? <Loading></Loading> :
                 <>
                     <section id="post" className="py-4">
-                        <Post post={post}></Post>
+                        <Post post={post} getAdditonalListItems={(p) => getAdditionalPostDetailedItemsList(p as PostDetailedModel)}></Post>
                     </section>
                     {   replies.length == 0 ? <></> :
                         <section id="replies">
