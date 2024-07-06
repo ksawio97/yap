@@ -1,8 +1,6 @@
 'use client'
 
 import NavBar from "./NavBar";
-import FloatingBlock from "./FloatingBlock";
-import LoginForm from "./LoginForm";
 import Image from "next/image";
 import goToSignIn from "@/yap/app/actions/goToSignIn";
 
@@ -25,7 +23,7 @@ export default function Header() {
                     </div>
                     <form action={goToSignIn}>
                         <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg">
-                            Sign In
+                            Sign in
                         </button>
                     </form>
                 </header>

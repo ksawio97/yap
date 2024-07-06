@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 // Your own logic for dealing with plaintext password strings; be careful!;
 import { getUserByEmail } from '@/yap/db/services/users';
 import { verifyUser } from "./verify";
+import UserModel from "../db/models/UserModel";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -16,15 +17,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       authorize: async (credentials) => {
-        // Check if the user exists in your database
+        // are fields filled
         if (credentials.email === null || typeof(credentials.email) !== 'string' || credentials.password === null || typeof(credentials.password) !== 'string')
             return null;
-        const user = await getUserByEmail(credentials.email);
-        if (user === null)
-          return null;
-        if (verifyUser(user, credentials.password))
-          return user;
-        return null;
+
+        let user: UserModel | null = null;
+        // check if user exists in database
+        try {
+          user = await getUserByEmail(credentials.email);
+        } catch (e) {
+          throw new Error("Invalid email or password");
+        }
+
+        if (user === null || !verifyUser(user, credentials.password))
+          throw new Error("Invalid email or password")
+        
+        return user;
       }
     })
   ],
@@ -44,7 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
-    session: ({ session, token, user }) => {
+    session: async ({ session, token, user }) => {
       if (token) {
         session.userId = token.id as string;
         session.user.id = token.id as string;
@@ -55,13 +63,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           session.user.email = token.email;
       }
       return session;
-    },
+    }
   },
   pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
-    error: '/auth/error', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', // (used for check email message)
-    newUser: undefined // If set, new users will be directed here on first sign in
+    signIn: '/auth/signin'
   }
 })

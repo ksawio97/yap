@@ -6,6 +6,7 @@ import PostList from "@/yap/components/Post/PostList";
 import { useEffect, useState } from "react";
 import PostModel from "../db/models/PostModel";
 import Loading from "../components/Loading";
+import ContentAsPageWrapper from "../components/Wrappers/ContentAsPageWrapper";
 
 export default function Home() {
   const [posts, setPosts] = useState<PostModel[] | undefined>();
@@ -17,25 +18,26 @@ export default function Home() {
           (rejection) => console.error(rejection))
         .then((value) => {
             const posts = value as PostModel[];
-            if (posts.length > 0)
-              setPosts(posts);
+            setPosts(posts);
         })
         .catch((rejected) => console.error(rejected));
     })()
   }, [])
 
   return (
-      <main className="w-full md:w-2/3 xl:w-1/2 justify-self-center h-full divide-y divide-white">
-        <div className="w-full flex flex-row">
-          <div className="px-4">
-            <ProfilePicture></ProfilePicture>
+      <ContentAsPageWrapper>
+        <main className="divide-y divide-white">
+          <div className="w-full flex flex-row">
+            <div className="px-4">
+              <ProfilePicture></ProfilePicture>
+            </div>
+            <PostForm></PostForm>
           </div>
-          <PostForm></PostForm>
-        </div>
-        { !posts ? <Loading/> :
-          <PostList posts={posts}></PostList>
-        }
-        
-      </main>
+          { !posts ? <Loading/> :
+            <PostList posts={posts}></PostList>
+          }
+          
+        </main>
+      </ContentAsPageWrapper>
   );
 }
