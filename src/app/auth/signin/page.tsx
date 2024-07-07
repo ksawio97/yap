@@ -1,17 +1,20 @@
-import SigninForm from "@/yap/components/Header/SigninForm";
-import FloatingBlockWrapper from "@/yap/components/Wrappers/FloatingBlockWrapper";
+'use server'
+
+import SigninForm from "@/yap/components/Auth/SigninForm";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
-export default function Singin() {
+export default async function Singin() {
+    const csrfToken = cookies().get('next-auth.csrf-token')?.value.split('|')[0] as string;
+
     return (
         <div className="justify-self-center h-fit pt-32 w-3/6 flex flex-col gap-4">
             <h2 className="sm:text-6xl text-5xl p-3 text-center">Sign in</h2>
             <div className="w-1/2 self-center">
-                <SigninForm>
-                </SigninForm>
+                <SigninForm csrfToken={csrfToken}/>
             </div>
             <div className="self-center">
-                <Link href="/">New here? <span className="text-emerald-300">Sign up</span></Link>
+                <Link href="/auth/signup">New here? <span className="text-emerald-300">Sign up</span></Link>
             </div>
         </div>
 

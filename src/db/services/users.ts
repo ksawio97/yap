@@ -6,7 +6,6 @@ export async function getUserByEmail(email: string) {
     const user = await prisma.user.findUnique({
         where: { email: email }
     })
-    
     return user as UserModel | null;
 }
 
@@ -18,6 +17,5 @@ export async function createUser(email: string, password: string) {
             password: hashedPassword
         }
     })
-
     return newUser as Promise<UserModel>;
 }
