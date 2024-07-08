@@ -8,9 +8,9 @@ export default async function Singin() {
     const csrfToken = cookies().get('next-auth.csrf-token')?.value.split('|')[0] as string;
 
     return (
-        <div className="justify-self-center h-fit pt-32 w-3/6 flex flex-col gap-4">
+        <div className="justify-self-center h-fit pt-32 lg:w-1/4 flex flex-col gap-4">
             <h2 className="sm:text-6xl text-5xl p-3 text-center">Sign in</h2>
-            <div className="w-1/2 self-center">
+            <div className="w-full self-center">
                 <SigninForm csrfToken={csrfToken}/>
             </div>
             <div className="self-center">

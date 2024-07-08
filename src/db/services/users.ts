@@ -9,13 +9,21 @@ export async function getUserByEmail(email: string) {
     return user as UserModel | null;
 }
 
-export async function createUser(email: string, password: string) {
+export async function createUser(email: string, password: string, name: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = prisma.user.create({
         data: {
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            name: name
         }
     })
     return newUser as Promise<UserModel>;
+}
+
+export async function getUserByName(name: string) {
+    const user = await prisma.user.findUnique({
+        where: { name: name }
+    })
+    return user as UserModel | null;
 }
