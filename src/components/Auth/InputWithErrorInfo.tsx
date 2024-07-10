@@ -1,4 +1,5 @@
 import ErrorInfo from "./ErrorInfo";
+import ErrorInfoList from "./ErrorInfoList";
 
 export type InputWithErrorInfoProps = {
     type: string,
@@ -14,9 +15,7 @@ export default function InputWithErrorInfo({ type, name, labelText, errors }: In
             <label htmlFor={name} className="text-xl">{labelText}</label>
             <div className="flex flex-col">
                 <input type={type} name={name} id={name} className="p-2 text-black"required></input>
-                {errors && 
-                    errors.map((error) =>  <ErrorInfo key={`ErrorInfo${error}`} error={error}></ErrorInfo>)
-                }
+                <ErrorInfoList errors={errors}></ErrorInfoList>
             </div>
         </div>
     );

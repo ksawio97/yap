@@ -50,9 +50,9 @@ export type SingUpState = {
 }
 
 const singUpScheme = z.object({
-    name: z.string().min(5).max(50),
+    name: z.string().min(5).max(26),
     email: z.string().email(),
-    password: z.string().min(8).max(50)
+    password: z.string().min(8).max(26)
 });
 
 export async function singUp(prevState: SingUpState | undefined, formData: FormData): Promise<SingUpState> {
