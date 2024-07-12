@@ -1,6 +1,6 @@
 'use client'
 
-import { authenticate } from "@/yap/app/actions/auth"
+import authenticate from "@/yap/app/actions/auth/authenticate"
 import { useFormState } from "react-dom"
 import { cookies } from 'next/headers';
 

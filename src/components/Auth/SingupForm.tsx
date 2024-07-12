@@ -1,6 +1,6 @@
 'use client'
 
-import { singUp } from "@/yap/app/actions/auth";
+import singUp from "@/yap/app/actions/auth/signUp";
 import { useFormState } from "react-dom";
 import InputWithErrorInfo from "./InputWithErrorInfo";
 import ErrorInfoList from "./ErrorInfoList";

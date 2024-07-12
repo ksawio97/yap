@@ -1,44 +1,9 @@
 'use server'
 
-import { signIn } from "@/yap/auth/auth";
 import UserModel from "@/yap/db/models/UserModel";
 import { createUser, getUserByEmail, getUserByName } from "@/yap/db/services/users";
 import { z } from 'zod';
-import { AuthError } from "next-auth";
-
-export type AuthenticateState = {
-    message: string | null,
-    error: boolean
-}
-
-function getErrorMessage(error: AuthError): string {
-    switch (error.type) {
-        case 'CredentialsSignin':
-            return 'Invalid credentials.';
-          default:
-            return 'Something went wrong.';
-    }
-}
-
-export async function authenticate(prevState: AuthenticateState | undefined, formData: FormData): Promise<AuthenticateState> {
-    try {
-        // TODO verify email
-        // sign in
-        await signIn('credentials', formData);
-    } catch (error) {
-        if (!(error instanceof AuthError))
-            throw error;
-        return {
-            message: getErrorMessage(error),
-            error: true
-        }
-    }
-
-    return {
-        message: "Sucess",
-        error: false
-    }
-}
+import { sendVerificationEmail } from "./email";
 
 export type SingUpState = {
     errors: {
@@ -55,7 +20,7 @@ const singUpScheme = z.object({
     password: z.string().min(8).max(26)
 });
 
-export async function singUp(prevState: SingUpState | undefined, formData: FormData): Promise<SingUpState> {
+export default async function singUp(prevState: SingUpState | undefined, formData: FormData): Promise<SingUpState> {
     const result = singUpScheme.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
@@ -97,7 +62,8 @@ export async function singUp(prevState: SingUpState | undefined, formData: FormD
             }
         }
     }
-
+    // send email verification email
+    await sendVerificationEmail(user.email!!);
     return {
         errors: {}
     }

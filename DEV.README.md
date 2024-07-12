@@ -18,3 +18,7 @@ After editing prisma/schema.prisma run this command to update changes
 ```
 npx prisma generate
 ```
+Sometimes you need to migrate it first
+```
+prisma migrate dev --name init
+```

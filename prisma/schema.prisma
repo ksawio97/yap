@@ -56,6 +56,7 @@ model User {
   name          String?   @unique
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
+  emailVerifToken String?   @db.VarChar(255)
   image         String?
   password      String?
   posts         Post[]
