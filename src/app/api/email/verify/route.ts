@@ -1,4 +1,6 @@
 import { getUserToken, setUserEmailVerified } from '@/yap/db/services/users';
+import getURL from '@/yap/libs/getUrl';
+import { permanentRedirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -16,5 +18,5 @@ export async function GET(req: NextRequest) {
     }
 
     await setUserEmailVerified(email);
-    return new NextResponse(JSON.stringify({ message: 'Verification was successful' }), { status: 200 });
+    permanentRedirect(getURL('/auth/signup/success'));
 }

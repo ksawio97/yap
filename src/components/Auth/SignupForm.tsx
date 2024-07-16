@@ -7,7 +7,7 @@ import ErrorInfoList from "./ErrorInfoList";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 
-export default function SingupForm() {
+export default function SignupForm() {
     const [formState, action] = useFormState(singUp, undefined);
     
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function SingupForm() {
         // any errors
         if (formState.errors._form || formState.errors.name || formState.errors.email || formState.errors.password)
             return;
-        redirect('/auth/signup/success')
+        redirect('/auth/signup/verify/email')
     }, [formState]);
 
     return (
