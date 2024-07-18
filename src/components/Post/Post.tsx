@@ -5,7 +5,7 @@ import Share from "./Icons/Share";
 import Comment from "./Icons/Comment";
 import PostModel from "@/yap/db/models/PostModel";
 import { useRouter } from "next/navigation";
-import getURL from "@/yap/libs/getUrl";
+import getURL from "@/yap/libs/getURL";
 import HoverIconWithPopup from "./Icons/HoverIconWithPopup";
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
 import { ReactNode } from "react";

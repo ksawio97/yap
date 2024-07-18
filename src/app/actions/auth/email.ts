@@ -1,7 +1,7 @@
 'use server'
 
 import nodemailer from 'nodemailer'
-import getURL from '@/yap/libs/getUrl';
+import getURL from '@/yap/libs/getURL';
 import { generateEmailVerificationToken } from '@/yap/db/services/users';
 
 // Create a transporter object

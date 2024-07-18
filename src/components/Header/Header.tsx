@@ -3,8 +3,10 @@
 import NavBar from "./NavBar";
 import Image from "next/image";
 import goToSignIn from "@/yap/app/actions/goToSignIn";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
+    const { data: _, status } = useSession()
 
     return (
         <>
@@ -21,11 +23,13 @@ export default function Header() {
                             alt="Website logo" />
                         <NavBar></NavBar>
                     </div>
-                    <form action={goToSignIn}>
-                        <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg">
-                            Sign in
-                        </button>
-                    </form>
+                    { status !== "authenticated" &&
+                        <form action={goToSignIn}>
+                            <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg" disabled={ status === "loading"}>
+                                Sign in
+                            </button>
+                        </form>
+                    }
                 </header>
             </div>
         </>
