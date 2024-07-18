@@ -32,7 +32,7 @@ export default async function authenticate(prevState: AuthenticateState | undefi
     }
 
     return {
-        message: "Sucess",
+        message: "Success",
         error: false
     }
 }

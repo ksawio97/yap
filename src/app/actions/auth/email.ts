@@ -1,8 +1,6 @@
 'use server'
 
 import nodemailer from 'nodemailer'
-import { randomBytes } from 'crypto';
-import { EmailNotVerifiedError } from '@/yap/errors/EmailNotVerifiedError';
 import getURL from '@/yap/libs/getUrl';
 import { generateEmailVerificationToken } from '@/yap/db/services/users';
 
