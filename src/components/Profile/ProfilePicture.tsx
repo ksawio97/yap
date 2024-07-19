@@ -1,9 +1,7 @@
-export default function ProfilePicture() {
+import Image from "next/image";
+
+export default function ProfilePicture({ sizeMultiplier = 1 } : { sizeMultiplier : 1 | 2 | 4}) {
     return (
-        <img 
-            className="rounded-full w-14 bg-slate-500"
-            src="/pfp.png"
-            alt="profile picture">
-        </img>
+        <Image src="/pfp.png" alt="profile picture" className="rounded-full bg-slate-500" width={sizeMultiplier * 56} height={sizeMultiplier * 56}></Image>
     )
 }

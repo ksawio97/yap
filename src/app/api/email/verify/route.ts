@@ -1,5 +1,5 @@
 import { getUserToken, setUserEmailVerified } from '@/yap/db/services/users';
-import getURL from '@/yap/libs/getUrl';
+import getURL from '@/yap/libs/getURL';
 import { permanentRedirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 

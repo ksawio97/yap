@@ -12,23 +12,23 @@ import { ReactNode } from "react";
 
 type PostProps = {
     post: PostModel | PostDetailedModel,
-    getAdditonalListItems: (post: PostModel | PostDetailedModel) => ReactNode,
+    getAdditionalListItems: (post: PostModel | PostDetailedModel) => ReactNode,
 }
 
-export default function Post({ post, getAdditonalListItems }: PostProps) {
+export default function Post({ post, getAdditionalListItems }: PostProps) {
     const router = useRouter();
     
     return (
         <article className="w-full flex flex-row">
             <div className="w-14 p-2">
-                <ProfilePicture></ProfilePicture>
+                <ProfilePicture sizeMultiplier={1}></ProfilePicture>
             </div>
             <div className="flex flex-col w-full">
                 <div className="w-full flex flex-row gap-2">
                     <h3 className="text-white font-bold">{post.author.name}</h3>
                     {/* TODO update timeAgo every 1 minute */}
-                    <ul className="additionalItemsList font-light text-gray-400 flex flex-row gap-1">
-                        {getAdditonalListItems(post)}
+                    <ul className="font-light text-gray-400 flex flex-row gap-1">
+                        {getAdditionalListItems(post)}
                     </ul>
                 </div>
                 <p className="p-1">{post.content}</p>

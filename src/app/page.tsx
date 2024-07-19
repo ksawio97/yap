@@ -12,7 +12,7 @@ export default function Home() {
   const [posts, setPosts] = useState<PostModel[] | undefined>();
   useEffect(() => {
     (async () => {
-      fetch('api/posts')
+      fetch('/api/posts')
         .then(
           (value) => value.json(), 
           (rejection) => console.error(rejection))
@@ -29,7 +29,7 @@ export default function Home() {
         <main className="divide-y divide-white">
           <div className="w-full flex flex-row">
             <div className="px-4">
-              <ProfilePicture></ProfilePicture>
+              <ProfilePicture sizeMultiplier={1}></ProfilePicture>
             </div>
             <PostForm></PostForm>
           </div>

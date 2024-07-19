@@ -36,14 +36,14 @@ export default function PostDetails() {
                 })
                 .catch(err => console.error(err));
         })();
-    }, []);
+    }, [id, router]);
 
     return (
         <main className="w-full md:w-2/3 xl:w-1/2 justify-self-center h-full divide-y divide-white">
             {!post || !replies ? <Loading></Loading> :
                 <>
                     <section id="post" className="py-4">
-                        <Post post={post} getAdditonalListItems={(p) => getAdditionalPostDetailedItemsList(p as PostDetailedModel)}></Post>
+                        <Post post={post} getAdditionalListItems={(p) => getAdditionalPostDetailedItemsList(p as PostDetailedModel)}></Post>
                     </section>
                     {   replies.length == 0 ? <></> :
                         <section id="replies">

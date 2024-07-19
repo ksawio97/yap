@@ -7,7 +7,7 @@ export default function PostList({ posts }: {posts: PostModel[]}) {
             {posts.map((post) => 
                 <Post key={`Post-${post.id}`}
                     post={post}
-                    getAdditonalListItems={(p) => getAdditionalPostItemsList(p)}>
+                    getAdditionalListItems={(p) => getAdditionalPostItemsList(p)}>
                 </Post>
             )}
         </section>

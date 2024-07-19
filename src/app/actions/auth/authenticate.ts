@@ -7,7 +7,7 @@ export type AuthenticateState = {
     message: string | null,
     error: boolean
 }
-
+// TODO fix error recognition
 function getErrorMessage(error: AuthError): string {
     switch (error.type) {
         case 'CredentialsSignin':

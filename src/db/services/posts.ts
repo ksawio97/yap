@@ -78,3 +78,27 @@ export async function getPostById(postId: string) {
 
     return post as PostDetailedModel;
 }
+
+export async function getPostsByUserId(userId: string, limit: number = 50) {
+  const posts = await prisma.post.findMany({
+      take: limit,
+      include: {
+        author: {
+          select: { name: true },
+        },
+        _count: {
+          select: {
+            replies: true,
+          } 
+        }
+      },
+      where: {
+        authorId: userId
+      },
+      orderBy: {
+        published: 'desc'
+      }
+    });
+    
+  return posts as PostModel[];
+}
