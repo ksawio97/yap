@@ -6,6 +6,7 @@ import InputWithErrorInfo from "./InputWithErrorInfo";
 import ErrorInfoList from "./ErrorInfoList";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
+import getURL from "@/yap/libs/getURL";
 
 export default function SignupForm() {
     const [formState, action] = useFormState(singUp, undefined);
@@ -17,7 +18,7 @@ export default function SignupForm() {
         // any errors
         if (formState.errors._form || formState.errors.name || formState.errors.email || formState.errors.password)
             return;
-        redirect('/auth/signup/verify/email')
+        redirect(getURL('/auth/signup/verify/email'))
     }, [formState]);
 
     return (

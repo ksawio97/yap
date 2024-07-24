@@ -1,20 +1,25 @@
 'use server'
 
 import { signIn } from "@/yap/auth/auth";
-import { AuthError } from "next-auth";
+import getURL from "@/yap/libs/getURL";
+import { CredentialsSignin } from "next-auth";
+import { redirect } from "next/navigation";
 
 export type AuthenticateState = {
     message: string | null,
     error: boolean
 }
-// TODO fix error recognition
-function getErrorMessage(error: AuthError): string {
-    switch (error.type) {
-        case 'CredentialsSignin':
-            return 'Invalid credentials.';
-          default:
-            return 'Something went wrong.';
-    }
+const defaultErrMessage = 'Something went wrong.';
+
+function getErrorMessage(error: Error | undefined): string {
+    if (!error)
+        return defaultErrMessage;
+
+    if (error instanceof CredentialsSignin)
+        return error.message;
+
+    // not every error message should be displayed
+    return defaultErrMessage;
 }
 
 export default async function authenticate(prevState: AuthenticateState | undefined, formData: FormData): Promise<AuthenticateState> {
@@ -23,14 +28,19 @@ export default async function authenticate(prevState: AuthenticateState | undefi
         // sign in
         await signIn('credentials', formData);
     } catch (error) {
-        if (!(error instanceof AuthError))
-            throw error;
+        // Extract the nested error
+        let nestedError = undefined;
+        if (error && typeof error === 'object' && 'cause' in error && error.cause && typeof error.cause === 'object' && 'err' in error.cause && error.cause.err) {
+          nestedError = error.cause.err;
+        }
+
         return {
-            message: getErrorMessage(error),
+            message: getErrorMessage(nestedError as Error),
             error: true
         }
     }
 
+    // it won't come to that bcs middleware immediately blocks signin page after signin
     return {
         message: "Success",
         error: false

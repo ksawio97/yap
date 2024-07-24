@@ -23,9 +23,9 @@ export default function Header() {
                             alt="Website logo" />
                         <NavBar></NavBar>
                     </div>
-                    { status !== "authenticated" &&
+                    { status === "unauthenticated" &&
                         <form action={goToSignIn}>
-                            <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg" disabled={ status === "loading"}>
+                            <button type="submit" className="w-28 h-12 bg-amber-500 rounded-lg">
                                 Sign in
                             </button>
                         </form>

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "../db/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -10,7 +10,6 @@ import UserModel from "../db/models/UserModel";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      // The name to display on the sign-in form (e.g., 'Sign in with...')
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -26,11 +25,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           user = await getUserByEmail(credentials.email);
         } catch (e) {
-          throw new Error("Invalid email or password");
+          throw new CredentialsSignin("Invalid email or password");
         }
 
         if (user === null || !verifyUser(user, credentials.password))
-          throw new Error("Invalid email or password")
+          throw new CredentialsSignin("Invalid email or password")
         
         return user;
       }
