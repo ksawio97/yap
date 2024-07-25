@@ -3,7 +3,6 @@
 import UserModel from "@/yap/db/models/UserModel";
 import { createUser, getUserByEmail, getUserByName } from "@/yap/db/services/users";
 import { z } from 'zod';
-import { sendVerificationEmail } from "./email";
 
 export type SingUpState = {
     errors: {
@@ -12,10 +11,14 @@ export type SingUpState = {
         password?: string[],
         _form?: string[],
     }
+    // if success return email of created user (for url redirection)
+    email?: string 
 }
 
 const singUpScheme = z.object({
-    name: z.string().min(5).max(26),
+    name: z.string().min(5).max(26).regex(/^[a-zA-Z0-9_-]+$/, {
+        message: 'Name must contain only a-z, A-Z, 0-9, -, and _ characters',
+      }),
     email: z.string().email(),
     password: z.string().min(8).max(26)
 });
@@ -62,9 +65,9 @@ export default async function singUp(prevState: SingUpState | undefined, formDat
             }
         }
     }
-    // send email verification email
-    await sendVerificationEmail(user.email!!);
+
     return {
-        errors: {}
+        errors: {},
+        email: result.data.email
     }
 }

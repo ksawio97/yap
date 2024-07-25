@@ -16,9 +16,9 @@ export default function SignupForm() {
         if (!formState)
             return;
         // any errors
-        if (formState.errors._form || formState.errors.name || formState.errors.email || formState.errors.password)
+        if (formState.errors._form || formState.errors.name || formState.errors.email || formState.errors.password || !formState.email)
             return;
-        redirect(getURL('/auth/signup/verify/email'))
+        redirect(getURL(`/auth/signup/verify/${encodeURIComponent(formState.email)}`))
     }, [formState]);
 
     return (

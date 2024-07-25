@@ -1,9 +1,7 @@
 'use server'
 
 import { signIn } from "@/yap/auth/auth";
-import getURL from "@/yap/libs/getURL";
 import { CredentialsSignin } from "next-auth";
-import { redirect } from "next/navigation";
 
 export type AuthenticateState = {
     message: string | null,
