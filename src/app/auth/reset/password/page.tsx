@@ -1,6 +1,6 @@
 'use client';
 
-import ResetPasswordForm from "@/yap/components/Auth/ResetPasswordForm";
+import ResetPasswordForm from "@/yap/components/Auth/form/ResetPasswordForm";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

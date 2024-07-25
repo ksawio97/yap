@@ -1,4 +1,4 @@
-import SignupForm from "@/yap/components/Auth/SignupForm";
+import SignupForm from "@/yap/components/Auth/form/SignupForm";
 
 export default function Signup() {
     return (

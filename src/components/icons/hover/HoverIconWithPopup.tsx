@@ -1,8 +1,8 @@
 import { useState } from "react";
-import HoverIconProps from "../Props/HoverIconProps";
+import HoverIconProps from "./HoverIconProps";
 import HoverIcon from "./HoverIcon";
-import PopupMessage from "../PopupMessage";
-import PopupMessageProps from "../Props/PopupMessageProps";
+import PopupMessage from "../../Post/PopupMessage";
+import PopupMessageProps from "../../Post/Props/PopupMessageProps";
 
 type HoverIconWithPopupProps = Omit<HoverIconProps & { popupProps: Omit<PopupMessageProps, 'show'>,  } & { handleOnHoverIconClick?: () => void }, 'handleOnClick'>;
 

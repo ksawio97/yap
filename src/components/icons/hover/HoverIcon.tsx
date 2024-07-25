@@ -1,7 +1,7 @@
 'use client'
 
 import { memo } from "react";
-import HoverIconProps from "../Props/HoverIconProps";
+import HoverIconProps from "./HoverIconProps";
 
 const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, handleOnClick}: HoverIconProps) {
     return (

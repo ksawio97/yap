@@ -1,4 +1,4 @@
-import WarningIcon from "./WarningIcon";
+import WarningIcon from "../../icons/WarningIcon";
 
 export default function ErrorInfo({ error }: { error: string}) {
     return (

@@ -1,12 +1,12 @@
 import ProfilePicture from "../Profile/ProfilePicture";
-import Like from "./Icons/Like";
-import HoverIcon from "./Icons/HoverIcon";
-import Share from "./Icons/Share";
-import Comment from "./Icons/Comment";
+import LikeIcon from "../icons/LikeIcon";
+import HoverIcon from "../icons/hover/HoverIcon";
+import ShareIcon from "../icons/ShareIcon";
+import CommentIcon from "../icons/CommentIcon";
 import PostModel from "@/yap/db/models/PostModel";
 import { useRouter } from "next/navigation";
 import getURL from "@/yap/libs/getURL";
-import HoverIconWithPopup from "./Icons/HoverIconWithPopup";
+import HoverIconWithPopup from "../icons/hover/HoverIconWithPopup";
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
 import { ReactNode } from "react";
 
@@ -33,12 +33,12 @@ export default function Post({ post, getAdditionalListItems }: PostProps) {
                 </div>
                 <p className="p-1">{post.content}</p>
                 <div className="grid grid-cols-3 px-8 py-2 text-gray-500">
-                    <HoverIcon color="#64748b" hoverColor="red" content={post.likes.toString()} icon={<Like/>}></HoverIcon>
-                    <HoverIcon color="#64748b" hoverColor="blue" content={post._count ? post._count.replies.toString() : '0' } icon={<Comment/>} handleOnClick={() => {
+                    <HoverIcon color="#64748b" hoverColor="red" content={post.likes.toString()} icon={<LikeIcon/>}></HoverIcon>
+                    <HoverIcon color="#64748b" hoverColor="blue" content={post._count ? post._count.replies.toString() : '0' } icon={<CommentIcon/>} handleOnClick={() => {
                         router.push(`/post/${post.id}`);
                     }}></HoverIcon>
 
-                    <HoverIconWithPopup color="#64748b" hoverColor="orange" content="Share" icon={<Share/>}
+                    <HoverIconWithPopup color="#64748b" hoverColor="orange" content="Share" icon={<ShareIcon/>}
                         popupProps={{
                             message: "Copied to clipboard!",
                             color: "white",

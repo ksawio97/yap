@@ -2,8 +2,8 @@
 
 import singUp from "@/yap/app/actions/auth/signUp";
 import { useFormState } from "react-dom";
-import InputWithErrorInfo from "./InputWithErrorInfo";
-import ErrorInfoList from "./ErrorInfoList";
+import InputWithErrorInfo from "../error/InputWithErrorInfo";
+import ErrorInfoList from "../error/ErrorInfoList";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import getURL from "@/yap/libs/getURL";

@@ -2,7 +2,6 @@ import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "../db/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-// Your own logic for dealing with plaintext password strings; be careful!;
 import { getUserByEmail } from '@/yap/db/services/users';
 import { verifyUser } from "./verify";
 import UserModel from "../db/models/UserModel";
@@ -39,6 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 7 // 1 week
   },
   callbacks: {
     jwt: async ({ token, user }) => {

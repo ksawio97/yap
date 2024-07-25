@@ -1,6 +1,6 @@
 'use server'
 
-import SigninForm from "@/yap/components/Auth/SigninForm";
+import SigninForm from "@/yap/components/Auth/form/SigninForm";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
