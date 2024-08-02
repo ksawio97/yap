@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { getUserByEmail } from '@/yap/db/services/users';
 import { verifyUser } from "./verify";
 import UserModel from "../db/models/UserModel";
+import { emailValidator } from "../libs/validators";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -15,6 +16,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       authorize: async (credentials) => {
+        const emailValidation = emailValidator.safeParse(credentials.email);
+        if (!emailValidation.success) {
+            throw new CredentialsSignin(emailValidation.error.message);
+        }
+        
         // are fields filled
         if (credentials.email === null || typeof(credentials.email) !== 'string' || credentials.password === null || typeof(credentials.password) !== 'string')
             return null;
@@ -62,7 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           session.user.email = token.email;
       }
       return session;
-    }
+    },
   },
   pages: {
     signIn: '/auth/signin'

@@ -19,6 +19,8 @@ model Post {
   parentId String? @map("parent_id")
   parent Post? @relation("PostReplies", fields: [parentId], references: [id])
   replies Post[] @relation("PostReplies")
+
+  @@map("posts")
 }
 
 model Account {
@@ -59,11 +61,24 @@ model User {
   emailVerifToken String?   @db.VarChar(255)
   image         String?
   password      String?
+
+  passwordResetToken PasswordResetToken? @relation("UserToPasswordResetToken")
   posts         Post[]
   accounts      Account[]
   sessions      Session[]
  
   @@map("users")
+}
+
+model PasswordResetToken {
+  id String @id @default(cuid())
+  token String?   @db.VarChar(255)
+  expirationDate DateTime @default(dbgenerated("NOW() + INTERVAL '1 DAY'"))  @map("expiration_date")
+
+  user User @relation("UserToPasswordResetToken", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id") @unique
+
+  @@map("password_reset_tokens")
 }
  
 model VerificationToken {

@@ -38,24 +38,47 @@ export async function getUserToken(email: string) {
     return user.emailVerifToken;
 }
 
-export async function generateEmailVerificationToken(email: string) {
-    const token = randomBytes(32).toString('hex');
-    await prisma.user.update({
-        where: { email: email },
-        data: {
-            emailVerifToken: token
-        }
-    });
+export const verification = {
+    /**
+     * 
+     * @param email - email token will be associated with
+     * @returns token which verifies user's email
+     */
+    generateEmailToken: async function (email: string) {
+        const token = randomBytes(32).toString('hex');
+        await prisma.user.update({
+            where: { email: email },
+            data: {
+                emailVerifToken: token
+            }
+        });
+    
+        return token;
+    },
 
-    return token;
-}
-
-export async function setUserEmailVerified(email: string) {
-    await prisma.user.update({
-        where: { email: email },
-        data: {
-            emailVerified: new Date(),
-            emailVerifToken: null,
-        }
-    });
+    /**
+     * 
+     * @param email - email token will be associated with
+     * @returns token which allows for password change
+     */
+    generatePasswordToken: async function (email: string) {
+        const token = randomBytes(32).toString('hex');
+        // await prisma.user.update({
+        //     where: { email: email },
+        //     data: {
+        //         emailVerifToken: token
+        //     }
+        // });
+    
+        return token;
+    },
+    setUserEmailVerified: async function (email: string) {
+        await prisma.user.update({
+            where: { email: email },
+            data: {
+                emailVerified: new Date(),
+                emailVerifToken: null,
+            }
+        });
+    }
 }

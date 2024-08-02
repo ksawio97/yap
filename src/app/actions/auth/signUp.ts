@@ -2,6 +2,7 @@
 
 import UserModel from "@/yap/db/models/UserModel";
 import { createUser, getUserByEmail, getUserByName } from "@/yap/db/services/users";
+import { emailValidator, nameValidator, passwordValidator } from "@/yap/libs/validators";
 import { z } from 'zod';
 
 export type SingUpState = {
@@ -16,11 +17,9 @@ export type SingUpState = {
 }
 
 const singUpScheme = z.object({
-    name: z.string().min(5).max(26).regex(/^[a-zA-Z0-9_-]+$/, {
-        message: 'Name must contain only a-z, A-Z, 0-9, -, and _ characters',
-      }),
-    email: z.string().email(),
-    password: z.string().min(8).max(26)
+    name: nameValidator,
+    email: emailValidator,
+    password: passwordValidator
 });
 
 export default async function singUp(prevState: SingUpState | undefined, formData: FormData): Promise<SingUpState> {

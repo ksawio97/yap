@@ -1,4 +1,4 @@
-import CheckIcon from "@/yap/components/Auth/CheckIcon";
+import CheckIcon from "@/yap/components/icons/CheckIcon";
 import ContentAsPageWrapper from "@/yap/components/Wrappers/ContentAsPageWrapper"
 import Link from "next/link";
 

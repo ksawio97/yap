@@ -4,7 +4,7 @@ import SigninForm from "@/yap/components/Auth/form/SigninForm";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-export default async function Singin() {
+export default async function Signin() {
     const csrfToken = cookies().get('next-auth.csrf-token')?.value.split('|')[0] as string;
 
     return (

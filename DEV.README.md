@@ -20,5 +20,5 @@ npx prisma generate
 ```
 Sometimes you need to migrate it first
 ```
-prisma migrate dev --name init
+npx prisma migrate dev --name init
 ```

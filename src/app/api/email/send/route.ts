@@ -1,9 +1,8 @@
-import { sendVerificationEmail } from '@/yap/app/actions/auth/email';
+import sendEmailVerification from '@/yap/libs/email/sendEmailVerification';
 import { getUserByEmail } from '@/yap/db/services/users';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { emailValidator } from '@/yap/libs/validators';
 
-const emailValidator = z.string().email({ message: 'Invalid email address' });
 export async function POST(req: NextRequest) {
     let { email } = await req.json();
 
@@ -22,7 +21,7 @@ export async function POST(req: NextRequest) {
         }), { status: 404 });   
     }
     try {
-        await sendVerificationEmail(email);
+        await sendEmailVerification(email);
     } catch (error) {
         console.error(error);
         return new NextResponse(JSON.stringify({

@@ -2,6 +2,7 @@
 
 import { signIn } from "@/yap/auth/auth";
 import { CredentialsSignin } from "next-auth";
+import { redirect } from "next/navigation";
 
 export type AuthenticateState = {
     message: string | null,
@@ -22,9 +23,14 @@ function getErrorMessage(error: Error | undefined): string {
 
 export default async function authenticate(prevState: AuthenticateState | undefined, formData: FormData): Promise<AuthenticateState> {
     try {
-        // TODO verify email
+        const [email, password, csrfToken] = [formData.get('email'), formData.get('password'), formData.get('csrfToken')];
         // sign in
-        await signIn('credentials', formData);
+        await signIn('credentials', {
+            email: email,
+            password: password,
+            csrfToken: csrfToken,
+            redirect: false
+        });
     } catch (error) {
         // Extract the nested error
         let nestedError = undefined;
@@ -38,7 +44,7 @@ export default async function authenticate(prevState: AuthenticateState | undefi
         }
     }
 
-    // it won't come to that bcs middleware immediately blocks signin page after signin
+    redirect('/');
     return {
         message: "Success",
         error: false

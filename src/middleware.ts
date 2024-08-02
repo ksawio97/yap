@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/yap/auth/auth';
 import { getToken } from 'next-auth/jwt';
 import getURL from './libs/getURL';
 
 // Define paths to protect for logged-in users
-const authPaths = ['/auth/signin', '/auth/signup'];
+const authPaths = ['/auth/signin', '/auth/signup', '/api/auth/signin'];
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({

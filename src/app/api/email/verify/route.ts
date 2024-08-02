@@ -1,4 +1,4 @@
-import { getUserToken, setUserEmailVerified } from '@/yap/db/services/users';
+import { getUserToken, verification } from '@/yap/db/services/users';
 import getURL from '@/yap/libs/getURL';
 import { permanentRedirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     if (token !== expectedToken) {
         return new NextResponse(JSON.stringify({ error: 'Verification error' }), { status: 401 });
     }
-
-    await setUserEmailVerified(email);
+    
+    await verification.setUserEmailVerified(email);
     permanentRedirect(getURL('/auth/signup/success'));
 }
