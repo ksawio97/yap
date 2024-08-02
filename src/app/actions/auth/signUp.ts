@@ -1,8 +1,8 @@
 'use server'
 
-import UserModel from "@/yap/db/models/UserModel";
 import { createUser, getUserByEmail, getUserByName } from "@/yap/db/services/users";
 import { emailValidator, nameValidator, passwordValidator } from "@/yap/libs/validators";
+import { User } from "@prisma/client";
 import { z } from 'zod';
 
 export type SingUpState = {
@@ -46,7 +46,7 @@ export default async function singUp(prevState: SingUpState | undefined, formDat
         return errors;
     }
 
-    let user: UserModel
+    let user: User
     try {
         user = await createUser(result.data.email, result.data.password, result.data.name)
     } catch (error) {

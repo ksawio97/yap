@@ -4,8 +4,8 @@ import prisma from "../db/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { getUserByEmail } from '@/yap/db/services/users';
 import { verifyUser } from "./verify";
-import UserModel from "../db/models/UserModel";
 import { emailValidator } from "../libs/validators";
+import { User } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -25,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (credentials.email === null || typeof(credentials.email) !== 'string' || credentials.password === null || typeof(credentials.password) !== 'string')
             return null;
 
-        let user: UserModel | null = null;
+        let user: User | null = null;
         // check if user exists in database
         try {
           user = await getUserByEmail(credentials.email);

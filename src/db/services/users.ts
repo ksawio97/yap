@@ -1,13 +1,13 @@
 import { randomBytes } from 'crypto';
 import prisma from  '../client';
-import UserModel from '../models/UserModel';
+import { User } from '@prisma/client';
 var bcrypt = require('bcryptjs');
 
 export async function getUserByEmail(email: string) {
     const user = await prisma.user.findUnique({
         where: { email: email }
     })
-    return user as UserModel | null;
+    return user as User | null;
 }
 
 export async function createUser(email: string, password: string, name: string) {
@@ -19,14 +19,14 @@ export async function createUser(email: string, password: string, name: string) 
             name: name
         }
     })
-    return newUser as Promise<UserModel>;
+    return newUser as Promise<User>;
 }
 
 export async function getUserByName(name: string) {
     const user = await prisma.user.findUnique({
         where: { name: name }
     })
-    return user as UserModel | null;
+    return user as User | null;
 }
 
 export async function getUserToken(email: string) {
@@ -55,23 +55,7 @@ export const verification = {
     
         return token;
     },
-
-    /**
-     * 
-     * @param email - email token will be associated with
-     * @returns token which allows for password change
-     */
-    generatePasswordToken: async function (email: string) {
-        const token = randomBytes(32).toString('hex');
-        // await prisma.user.update({
-        //     where: { email: email },
-        //     data: {
-        //         emailVerifToken: token
-        //     }
-        // });
     
-        return token;
-    },
     setUserEmailVerified: async function (email: string) {
         await prisma.user.update({
             where: { email: email },

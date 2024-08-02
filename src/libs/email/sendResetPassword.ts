@@ -1,20 +1,20 @@
 'use server'
 
-import { verification } from '@/yap/db/services/users';
-
 import { emailFrom, transporter } from './values';
 import getURL from '../getURL';
+import { generatePasswordToken } from '@/yap/db/services/passwordResetTokens';
 
-export default async function sendResetPassword(email: string) {
-    const token = await verification.generatePasswordToken(email);
+export default async function sendResetPassword(userId: string, email: string, shouldExist: boolean) {
+    const token = await generatePasswordToken(userId, shouldExist);
 
     const emailData = {
         from: emailFrom,
         to: email,
-        subject: 'Email Verification',
+        subject: 'Reset your password',
         html: `
-        <p>Click the link below to verify your email:</p>
-        <a href="${getURL(`/api/email/verify?email=${email}&token=${token}`)}">Verify Email</a>
+        <h1>Click the link below to verify your email:</h1>
+        <p>Click the link below to restart your password. If you didn't make this request, please ignore this email.</p>
+        <a href="${getURL(`/api/email/verify?email=${email}&token=${token}`)}">Reset your password</a>
         `,
     };
 
