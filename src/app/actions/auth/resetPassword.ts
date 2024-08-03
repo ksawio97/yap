@@ -11,7 +11,7 @@ export type ResetPasswordState = {
 }
 
 
-export default async function resetPassword(prevState: ResetPasswordState | undefined, formData: FormData): Promise<ResetPasswordState> {
+export default async function resetPassword(prevState: ResetPasswordState | undefined, formData: FormData): Promise<ResetPasswordState> {    
     const email = formData.get('email');
     if (!email || typeof email !== 'string') {
         return {

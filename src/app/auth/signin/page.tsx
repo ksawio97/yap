@@ -14,7 +14,7 @@ export default async function Signin() {
                 <SigninForm csrfToken={csrfToken}/>
             </div>
             <div className="self-center flex flex-col gap-8">
-                <Link href="/auth/signup"><span className="text-emerald-300 text-nowrap">Forgot password?</span></Link>
+                <Link href="/auth/reset/password"><span className="text-emerald-300 text-nowrap">Forgot password?</span></Link>
                 <div className="h-px bg-white w-4/5 self-center"></div>
                 <Link href="/auth/signup" className="justify-self-center">New here? <span className="text-emerald-300 text-nowrap">Sign up</span></Link>
             </div>

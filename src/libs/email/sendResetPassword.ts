@@ -12,9 +12,9 @@ export default async function sendResetPassword(userId: string, email: string, s
         to: email,
         subject: 'Reset your password',
         html: `
-        <h1>Click the link below to verify your email:</h1>
+        <h1>Click the link below to reset your password:</h1>
         <p>Click the link below to restart your password. If you didn't make this request, please ignore this email.</p>
-        <a href="${getURL(`/api/email/verify?email=${email}&token=${token}`)}">Reset your password</a>
+        <a href="${getURL(`/auth/reset/password/${token.id}/${token.token}`)}">Reset your password</a>
         `,
     };
 
