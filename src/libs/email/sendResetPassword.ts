@@ -3,6 +3,7 @@
 import { emailFrom, transporter } from './values';
 import getURL from '../getURL';
 import { generatePasswordToken } from '@/yap/db/services/passwordResetTokens';
+import getHtmlContentBox from './getHtmlContentBox';
 
 export default async function sendResetPassword(userId: string, email: string, shouldExist: boolean) {
     const token = await generatePasswordToken(userId, shouldExist);
@@ -11,11 +12,10 @@ export default async function sendResetPassword(userId: string, email: string, s
         from: emailFrom,
         to: email,
         subject: 'Reset your password',
-        html: `
-        <h1>Click the link below to reset your password:</h1>
-        <p>Click the link below to restart your password. If you didn't make this request, please ignore this email.</p>
-        <a href="${getURL(`/auth/reset/password/${token.id}/${token.token}`)}">Reset your password</a>
-        `,
+        html: getHtmlContentBox("Password reset",
+            "Click the link below to restart your password. If you didn't make this request, please ignore this email",
+            "Reset your password",
+            getURL(`/auth/reset/password/${token.id}/${token.token}`)),
     };
 
     try {
