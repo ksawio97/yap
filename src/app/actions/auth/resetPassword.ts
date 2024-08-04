@@ -37,7 +37,7 @@ export default async function resetPassword(prevState: ResetPasswordState | unde
     const token = await getPasswordResetTokenByUserId(user.id);
     if (token && token.expirationDate && token.expirationDate.getTime() >= Date.now()) {
         return {
-            message: "Still valid token should be in your inbox",
+            message: "You need to wait some time to reset password again",
             error: true
         }
     }

@@ -14,7 +14,7 @@ export default function ChangePassword() {
         fetch(`/api/password-token/verify?tokenId=${tokenId}&token=${resetToken}`)
             .then(async response => {
                 const { name } = await response.json();
-                setUsername(name || '');
+                setUsername(name || null);
             }, () => {
                 setUsername(null);
             })
@@ -25,11 +25,15 @@ export default function ChangePassword() {
 
     return (
         <>
-            { username === undefined ? <Loading></Loading> : username === null ? <div className="text-red-600 text-2xl">Something went wrong...</div> :
-                <ContentAsPageWrapper>
+            { username === undefined ? <Loading></Loading> : username === null ? 
+            <div className="bg-red-100 text-red-900 font-bold py-4 px-6 text-2xl w-min text-nowrap justify-center">Something went wrong...</div>
+            : <ContentAsPageWrapper>
                     <h1 className="sm:text-3xl text-2xl pb-4">Changing {`'${username}'`} password</h1>
                     <div className="md:w-96 w-60">
-                        <ChangePasswordForm></ChangePasswordForm>
+                        <ChangePasswordForm tokenInfo={{
+                            id: tokenId.toString(),
+                            token: resetToken.toString()
+                        }}></ChangePasswordForm>
                     </div>
 
                 </ContentAsPageWrapper>
