@@ -4,7 +4,7 @@ Link dir to vercel project
 vercel link
 ```
 
-Get local enviroment variables
+Get local environment variables
 ```
 vercel env pull .env
 ``` 

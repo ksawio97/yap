@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 export default function Profile() {
     const { data: session, status} = useSession();
+    const [bio, setBio] = useState("");
     const [posts, setPosts] = useState<PostModel[] | undefined>();
 
     useEffect(() => {
@@ -18,18 +19,19 @@ export default function Profile() {
         return;
       }
 
-      (async () => {
-        fetch(`api/posts/user/${session.user!.id}`)
-          .then(
-            (value) => value.json(), 
-            (rejection) => console.error(rejection))
-          .then((value) => {
-              const posts = value as PostModel[];
-              setPosts(posts);
-          })
-          .catch((rejected) => console.error(rejected));
-      })();
-    }, [status]);
+      fetch(`api/posts/user/${session.user!.id}`)
+        .then(
+          (value) => value.json(), 
+          (rejection) => console.error(rejection))
+        .then((value) => {
+            const posts = value as PostModel[];
+            setPosts(posts);
+        })
+        .catch((rejected) => console.error(rejected));
+
+        fetch(`api/user/${session.user!.id}`)
+          .then(value => { value.json().then(data => setBio(data.bio))})
+    }, [status, session]);
 
 
     return (
@@ -43,7 +45,7 @@ export default function Profile() {
               <h3 className="text-white font-bold md:text-3xl text-2xl">{session && session.user ? session?.user?.name : 'You need to sign in'}</h3>
               {/* <p>TODO add posts count</p> */}
             </div>
-            {/* <p>TODO add bio</p> */}
+            <p>{bio}</p>
           </div>
         </div>
         { !posts ? <Loading/> :

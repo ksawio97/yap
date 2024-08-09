@@ -55,12 +55,13 @@ model Session {
  
 model User {
   id            String    @id @default(cuid())
-  name          String?   @unique
-  email         String?   @unique
+  name          String   @unique
+  bio           String    @default("") @db.VarChar(200)
+  email         String   @unique
   emailVerified DateTime? @map("email_verified")
   emailVerifToken String?   @db.VarChar(255)
   image         String?
-  password      String?
+  password      String
 
   passwordResetToken PasswordResetToken? @relation("UserToPasswordResetToken")
   posts         Post[]

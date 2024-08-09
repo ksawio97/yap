@@ -30,6 +30,6 @@ export async function POST(req: NextRequest) {
     }
 
     return new NextResponse(JSON.stringify({
-        error: "Email verification has been sent"
+        message: "Email verification has been sent"
     }), { status: 200 })
 }
