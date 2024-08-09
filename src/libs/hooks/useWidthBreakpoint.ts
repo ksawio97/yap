@@ -1,16 +1,23 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import useWidth from "./useWidth";
+import { useEffect, useRef, useState } from "react";
 
 export default function useWidthBreakpoint(isReached: (width: number) => boolean) {
-    const { width } = useWidth();
-    const [reached, setReached] = useState(isReached(width));
+    const prevWidth = useRef(0);
+    const [reached, setReached] = useState(isReached(prevWidth.current));
     
     useEffect(() => {
-        if (reached !== isReached(width))
-            setReached(!reached);
-    }, [width, isReached, reached]);
+        const resize = () => {
+            const currReached = isReached(window.innerWidth);
+            if (isReached(prevWidth.current) !== currReached)
+                setReached(currReached);
+
+            prevWidth.current = window.innerWidth;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        return () => window.removeEventListener('resize', resize);
+    }, [isReached]);
 
     return { reached };
 }

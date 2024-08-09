@@ -5,21 +5,23 @@ import PostList from "@/yap/components/Post/PostList";
 import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import ContentAsPageWrapper from "@/yap/components/Wrappers/ContentAsPageWrapper";
 import PostModel from "@/yap/db/models/PostModel";
-import { useSession } from "next-auth/react";
+import useSessionState from "@/yap/libs/hooks/useSessionState";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
-    const { data: session, status} = useSession();
     const [bio, setBio] = useState("");
     const [posts, setPosts] = useState<PostModel[] | undefined>();
 
+    const { session } = useSessionState((prev, curr) => prev?.user?.id !== curr?.user?.id);
+    
     useEffect(() => {
-      if (status !== 'authenticated' || session === null || session.user === null) {
+      const userId = session?.user?.id;
+      if (!userId) {
         setPosts([]);
         return;
       }
 
-      fetch(`api/posts/user/${session.user!.id}`)
+      fetch(`api/posts/user/${session?.user!.id}`)
         .then(
           (value) => value.json(), 
           (rejection) => console.error(rejection))
@@ -29,10 +31,9 @@ export default function Profile() {
         })
         .catch((rejected) => console.error(rejected));
 
-        fetch(`api/user/${session.user!.id}`)
-          .then(value => { value.json().then(data => setBio(data.bio))})
-    }, [status, session]);
-
+        fetch(`api/user/${session?.user!.id}`)
+          .then(value => { value.json().then(data => setBio(data.bio))});
+    }, [session]);
 
     return (
       <ContentAsPageWrapper>
