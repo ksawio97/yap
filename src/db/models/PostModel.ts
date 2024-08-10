@@ -8,7 +8,10 @@ type PostModel = {
     id: string;
     content: string;
     published: Date;
-    likes: number;
+    likes: {
+        count: string;
+        liked: boolean;
+    }
     authorId: string;
     parentId: string | null;
 }

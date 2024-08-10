@@ -1,4 +1,6 @@
+import { attachLikesInfoToPosts } from '@/yap/db/helpers/likes_posts/likesToPosts';
 import { getPostsByUserId } from '@/yap/db/services/posts';
+import getUserIdFromSession from '@/yap/libs/api/getUserIdFromSession';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -11,5 +13,9 @@ export async function GET(req: NextRequest) {
     if (posts === null) {
         return new NextResponse(JSON.stringify({ error: 'Posts not found' }), { status: 404 });
     }
-    return NextResponse.json(posts);
+
+    const reqUserId = await getUserIdFromSession(req);
+
+    const postsWithLikeInfo = await attachLikesInfoToPosts(posts, reqUserId || undefined);
+    return NextResponse.json(postsWithLikeInfo);
 }

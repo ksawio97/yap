@@ -32,13 +32,13 @@ export async function POST(req: NextRequest) {
     // mark user as the one that liked this post
     await redis.sAdd(likesKey, userId);
 
-    const likeCount = await redis.incr(`post:${postId}:like_count`);
+    const likes = await redis.incr(`post:${postId}:like_count`);
     
     return createResponse({
         message: 'Success',
         status: 200,
         data: {
-            likeCount
+            likes
         }
     })
 }

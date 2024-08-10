@@ -12,12 +12,12 @@ export async function GET(req: NextRequest) {
             status: 404
         });
     
-    const likeCount = await redis.get(`post:${postId}:like_count`);
+    const likes = await redis.get(`post:${postId}:like_count`);
     return createResponse({
         message: 'Success',
         status: 200,
         data: {
-            likeCount
+            likes
         }
     })
 }

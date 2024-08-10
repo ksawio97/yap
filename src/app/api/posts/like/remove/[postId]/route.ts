@@ -32,13 +32,13 @@ export async function POST(req: NextRequest) {
     // remove user marking from user that liked this post
     await redis.sRem(likesKey, userId);
 
-    const likeCount = await redis.decr(`post:${postId}:like_count`);
+    const likes = await redis.decr(`post:${postId}:like_count`);
     
     return createResponse({
         message: 'Success',
         status: 200,
         data: {
-            likeCount
+            likes
         }
     })
 }

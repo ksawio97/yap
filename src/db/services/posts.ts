@@ -1,5 +1,4 @@
 import prisma from '@/yap/db/client';
-import PostModel from '../models/PostModel';
 import PostDetailedModel from '../models/PostDetailedModel';
 import { Prisma } from '@prisma/client';
 
@@ -24,7 +23,7 @@ export async function getParentPosts(limit: number = 50) {
         }
       });
       
-    return posts as PostModel[];
+    return posts;
 }
 
 export async function getPostById(postId: string) {
@@ -100,5 +99,5 @@ export async function getPostsByUserId(userId: string, limit: number = 50) {
       }
     });
     
-  return posts as PostModel[];
+  return posts;
 }

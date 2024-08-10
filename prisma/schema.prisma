@@ -12,7 +12,6 @@ model Post {
   id        String   @default(cuid()) @id
   content   String   @db.VarChar(4000)
   published DateTime @default(now())
-  likes     Int
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
 
