@@ -1,7 +1,7 @@
 import { createClient, RedisClientType } from "redis";
 
 const REDIS_CONFIG = {
-  url: process.env.REDIS_URL,
+  url: process.env.KV_URL,
   socket: {
     tls: true,
   },

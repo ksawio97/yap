@@ -12,7 +12,8 @@ const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, han
                 }
                 .hover-icon:hover div {
                     stroke: ${hoverColor};
-                    box-shadow: ${hoverColor} 0px 0px 128px 4px;
+                    color: ${hoverColor};
+                    box-shadow: ${hoverColor} 0px 0px 128px 14px;
                     border-radius: 50%;
                 }
             `}</style>
@@ -20,7 +21,7 @@ const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, han
                 <div className="w-fit h-fit shadow">
                     {icon}
                 </div>
-                <p color={color}>{content}</p>
+                <p className="select-none" color={color}>{content}</p>
             </div>
         </>
     );

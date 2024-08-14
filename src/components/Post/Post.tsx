@@ -1,5 +1,4 @@
 import ProfilePicture from "../Profile/ProfilePicture";
-import LikeIcon from "../icons/LikeIcon";
 import HoverIcon from "../icons/hover/HoverIcon";
 import ShareIcon from "../icons/ShareIcon";
 import CommentIcon from "../icons/CommentIcon";
@@ -8,7 +7,8 @@ import { useRouter } from "next/navigation";
 import getURL from "@/yap/libs/getURL";
 import HoverIconWithPopup from "../icons/hover/HoverIconWithPopup";
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
+import PostLike from "./PostLike";
 
 type PostProps = {
     post: PostModel | PostDetailedModel,
@@ -33,7 +33,7 @@ export default function Post({ post, getAdditionalListItems }: PostProps) {
                 </div>
                 <p className="p-1">{post.content}</p>
                 <div className="grid grid-cols-3 px-8 py-2 text-gray-500">
-                    <HoverIcon color="#64748b" hoverColor="red" content={post.likes.count} icon={<LikeIcon/>}></HoverIcon>
+                    <PostLike postId={post.id} likeCount={post.likes.count} liked={post.likes.liked}></PostLike>
                     <HoverIcon color="#64748b" hoverColor="blue" content={post._count ? post._count.replies.toString() : '0' } icon={<CommentIcon/>} handleOnClick={() => {
                         router.push(`/post/${post.id}`);
                     }}></HoverIcon>
