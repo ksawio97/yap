@@ -15,12 +15,12 @@ export default function Home() {
       fetch('/api/posts')
         .then(
           (value) => value.json(), 
-          (rejection) => console.error(rejection))
+          (rejection) => setPosts([]))
         .then((value) => {
             const posts = value as PostModel[];
             setPosts(posts);
         })
-        .catch((rejected) => console.error(rejected));
+        .catch((rejected) => setPosts([]));
     })()
   }, [])
 

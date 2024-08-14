@@ -13,30 +13,34 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
         setIsLiked(liked);
     }, [liked]);
 
-    useEffect(() => {
+    const isLikedChange = () => {
         // TODO figure how to reduce calling this endpoints
         // add/remove like from post and update ui
-        fetch(`/api/posts/like/${isLiked ? "remove" : "add"}/${postId}`, { method: "POST"})
-            .then(async (response) => {
-                if (!response.ok)
-                    return;
+        // function makes sure even when isLiked changes, request stays the same
+        ((liked: boolean) => 
+            fetch(`/api/posts/like/${liked ? "remove" : "add"}/${postId}`, { method: "POST"})
+                .then(async (response) => {
+                    if (!response.ok)
+                        return;
 
-                const { likes } = await response.json();
-                if (likes)
-                    setLikes(likes.toString());
-        });
-    }, [isLiked]);
+                    const { likes } = await response.json();
+                    if (likes)
+                        setLikes(likes.toString());
+                })
+        )(isLiked);
+        setIsLiked(!isLiked);
+    }
     return (
         <HoverIcon color="#64748b" hoverColor="red" content={likes} icon={
             <DynamicLikeIcon liked={isLiked}></DynamicLikeIcon>
         } handleOnClick={
-            () => setIsLiked(!isLiked)
+            () => isLikedChange()
         }></HoverIcon>
     );
 }
 
 const DynamicLikeIcon = ({ liked }: { liked: boolean }) => {
     return (<div>
-        { liked ? <LikeIcon/> : <ClickedLikeIcon/>}
+        { liked ? <ClickedLikeIcon/> : <LikeIcon/>}
     </div>)
 }

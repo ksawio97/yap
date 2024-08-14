@@ -8,8 +8,13 @@ const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, han
         <>
             <style jsx>{`
                 .hover-icon {
-                    stroke: ${color}
+                    stroke: ${color};
                 }
+
+                .hover-icon > p {
+                    user-select: none;
+                }
+                    
                 .hover-icon:hover div {
                     stroke: ${hoverColor};
                     color: ${hoverColor};
