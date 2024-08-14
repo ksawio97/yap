@@ -16,6 +16,6 @@ export async function GET(req: NextRequest) {
 
     const userId = await getUserIdFromSession(req);
     const postWithLikesInfo = await attachLikesToPostDetailedModel(post, userId || undefined);
-    console.log(postWithLikesInfo);
+
     return NextResponse.json(postWithLikesInfo);
 }

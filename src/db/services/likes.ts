@@ -5,7 +5,7 @@ export async function getPostLikesInfo(postId: string, userId?: string) {
     
     return {
         count: await redis.get(likesKey) || '0',
-        liked: userId ? await redis.sIsMember(likesKey, userId) : false
+        liked: userId ? await redis.sIsMember(`post:${postId}:likes`, userId) : false
     };
 }
 
@@ -16,8 +16,8 @@ export async function getMultiplePostsLikesInfo(postIds: string[], userId?: stri
     const likesCounts = await redis.mGet(redisIds);
     const results = await Promise.all(likesCounts.map<Promise<[string, { count: string, liked: boolean}]>>(async (likeCount, i) => [postIds[i], { 
         count: likeCount || '0',
-        liked: userId ? await redis.sIsMember(postIds[i], userId) : false
+        liked: userId ? await redis.sIsMember(`post:${postIds[i]}:likes`, userId) : false
     }]));
 
-    return new Map(results);
+    return new Map<string, { count: string, liked: boolean}>(results);
 }
