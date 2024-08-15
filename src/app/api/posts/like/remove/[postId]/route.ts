@@ -1,4 +1,5 @@
 import { redis } from '@/yap/db/redis/client';
+import { likeOrDislikePost } from '@/yap/db/services/likes';
 import { getPostById } from '@/yap/db/services/posts';
 import createResponse from '@/yap/libs/api/createResponse';
 import getJwtToken from '@/yap/libs/auth/getJwtToken';
@@ -21,18 +22,14 @@ export async function POST(req: NextRequest) {
             status: 404
         });
     
-    const likesKey = `post:${postId}:likes`;
     const userId = session.id;
+    const likes = await likeOrDislikePost(userId, postId, true);
 
-    if (!await redis.sIsMember(likesKey, userId))
+    if (likes === undefined)
         return createResponse({
             message: 'User has\'t liked this post',
             status: 409
         })
-    // remove user marking from user that liked this post
-    await redis.sRem(likesKey, userId);
-
-    const likes = await redis.decr(`post:${postId}:like_count`);
     
     return createResponse({
         message: 'Success',

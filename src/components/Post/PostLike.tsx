@@ -24,7 +24,8 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
                         return;
 
                     const { likes } = await response.json();
-                    if (likes)
+                    console.log(likes);
+                    if (likes !== undefined)
                         setLikes(likes.toString());
                 })
         )(isLiked);
