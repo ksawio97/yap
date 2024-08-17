@@ -1,27 +1,22 @@
 import { actions } from '@/yap/db/services/likes';
-import checkPostExistence from '@/yap/libs/api/checkPostExistence';
 import createResponse from '@/yap/libs/api/createResponse';
 import { checkUserExistence } from '@/yap/libs/api/getUserIdFromSession';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
     const { userId, userNotFound } = await checkUserExistence(req);
-
-    if (userNotFound) 
+    if (userNotFound)
         return userNotFound;
 
-    const maybePostId = req.nextUrl.toString().split('/').pop();
-    const { postId, postNotFound } = await checkPostExistence(maybePostId);
-    if (postNotFound)
-        return postNotFound;
-
-    const likes = await actions.likePost(userId, postId);
-    if (likes === null)
+    const { postsIds } = await req.json();
+    // ensure it's defined and its array of strings
+    if (!postsIds || !Array.isArray(postsIds) || postsIds.every((postId) => typeof postId === 'string'))
         return createResponse({
-            message: 'User already liked this post',
-            status: 409
-        })
-    
+            message: 'postIds body parameter not provided or isn\'t string array',
+            status: 400
+        });
+
+    const likes = await actions.likePosts(userId, postsIds);
     return createResponse({
         message: 'Success',
         status: 200,

@@ -1,4 +1,4 @@
-import { getPostLikesInfo, getMultiplePostsLikesInfo } from '../../services/likes';
+import { getPostLikesInfo, getPostsLikesInfo } from '../../services/likes';
 import PostDetailedModel from '../../models/PostDetailedModel';
 
 interface Post {
@@ -18,7 +18,7 @@ export async function attachLikesInfoToPost(post: Post, userId?: string) {
 export async function attachLikesInfoToPosts(posts: Post[], userId?: string) {
     if (posts.length === 0)
         return [];
-    const likesCount = await getMultiplePostsLikesInfo(posts.map(p => p.id), userId);
+    const likesCount = await getPostsLikesInfo(posts.map(p => p.id), userId);
 
     return posts.map((post) => {
        return {

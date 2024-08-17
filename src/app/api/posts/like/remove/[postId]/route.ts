@@ -1,31 +1,22 @@
-import { redis } from '@/yap/db/redis/client';
-import { likeOrDislikePost } from '@/yap/db/services/likes';
-import { getPostById } from '@/yap/db/services/posts';
+import { actions } from '@/yap/db/services/likes';
+import checkPostExistence from '@/yap/libs/api/checkPostExistence';
 import createResponse from '@/yap/libs/api/createResponse';
-import getJwtToken from '@/yap/libs/auth/getJwtToken';
+import { checkUserExistence } from '@/yap/libs/api/getUserIdFromSession';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
-    const session = await getJwtToken(req);
+    const { userId, userNotFound } = await checkUserExistence(req);
+    if (userNotFound)
+        return userNotFound;
 
-    if (!session || !('id' in session) || typeof session.id !== 'string')
-        return createResponse({
-            message: "You need to sign in",
-            status: 401
-        });
-    
-    const postId = req.nextUrl.toString().split('/').pop();
+    const maybePostId = req.nextUrl.toString().split('/').pop();
+    const { postId, postNotFound } = await checkPostExistence(maybePostId);
+    if (postNotFound)
+        return postNotFound;
 
-    if (!postId || !(await getPostById(postId)))
-        return createResponse({
-            message: "Post with specified id does't exist",
-            status: 404
-        });
-    
-    const userId = session.id;
-    const likes = await likeOrDislikePost(userId, postId, true);
+    const likes = await actions.dislikePost(userId, postId);
 
-    if (likes === undefined)
+    if (likes === null)
         return createResponse({
             message: 'User has\'t liked this post',
             status: 409
