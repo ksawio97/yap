@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/yap/components/Header/Header";
 import { SessionProvider } from "next-auth/react";
+import { LikeQueueProvider } from "../libs/hooks/useLike";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider>
-          <Header></Header>
-          <div className="inline-grid w-full h-full p-8">
-            {children}
-          </div>
+          <LikeQueueProvider>
+            <Header></Header>
+            <div className="inline-grid w-full h-full p-8">
+              {children}
+            </div>
+          </LikeQueueProvider>
         </SessionProvider>
       </body>
     </html>

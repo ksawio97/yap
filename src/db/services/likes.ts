@@ -62,6 +62,9 @@ async function modifyPost(userId: string, postId: string, operation: 'incr' | 'd
 }
 
 async function modifyPosts(userId: string, postsIds: string[], operation: 'incr' | 'decr') {
+    if (postsIds.length === 0)
+        return new Map<string, (number | null)>();
+
     const shouldBeLiked = operation === 'incr'; 
     const whatUserLikedKey = getWhatLikedKey(userId);
 

@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import HoverIcon from "../icons/hover/HoverIcon";
 import LikeIcon from "../icons/LikeIcon";
 import ClickedLikeIcon from "../icons/ClickedLikeIcon";
+import { useLikeQueue } from "@/yap/libs/hooks/useLike";
 
 // TODO update parent post prop like variable to be up to date without much rerendering
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {
+    const { updateLike } = useLikeQueue();
+
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(likeCount);
 
@@ -14,21 +17,11 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
     }, [liked]);
 
     const isLikedChange = () => {
-        // TODO figure how to reduce calling this endpoints
         // add/remove like from post and update ui
-        // function makes sure even when isLiked changes, request stays the same
         ((liked: boolean) => 
-            fetch(`/api/posts/like/${liked ? "remove" : "add"}/${postId}`, { method: "POST"})
-                .then(async (response) => {
-                    if (!response.ok)
-                        return;
-
-                    const { likes } = await response.json();
-                    console.log(likes);
-                    if (likes !== undefined && likes !== null)
-                        setLikes(likes.toString());
-                })
+            updateLike(postId, liked)
         )(isLiked);
+        setLikes((likes) => String(Number(likes) + (!isLiked ? 1 : -1)));
         setIsLiked(!isLiked);
     }
     return (

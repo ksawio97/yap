@@ -9,22 +9,24 @@ export async function POST(req: NextRequest) {
     if (userNotFound)
         return userNotFound;
 
-    const { postsIds } = await req.json();
-    const postsList = checkIsStringArray(postsIds);
+    const { likePostsIds, dislikePostsIds } = await req.json();
 
     // ensure it's defined and its array of strings
-    if (!postsList)
+    const [likeList, dislikeList] = [checkIsStringArray(likePostsIds), checkIsStringArray(dislikePostsIds)];
+    if (!likeList || !dislikeList)
         return createResponse({
-            message: 'postIds body parameter not provided or isn\'t string array',
+            message: 'likePostsIds and dislikePostsIds body parameters not provided or aren\'t string arrays',
             status: 400
         });
 
-    const likes = await actions.dislikePosts(userId, postsIds);
+    const likes = await actions.likePosts(userId, likeList);
+    const dislikes = await actions.dislikePosts(userId, dislikeList);
     return createResponse({
         message: 'Success',
         status: 200,
         data: {
-            likes
+            likes,
+            dislikes
         }
     })
 }
