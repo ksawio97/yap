@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         message: 'Success',
         status: 200,
         data: {
-            likes
+            likes: Array.from(likes.entries())
         }
     })
 }

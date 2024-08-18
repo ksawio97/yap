@@ -6,10 +6,17 @@ import { useLikeQueue } from "@/yap/libs/hooks/useLike";
 
 // TODO update parent post prop like variable to be up to date without much rerendering
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {
-    const { updateLike } = useLikeQueue();
+    const { updateLike, onLikeCountChange } = useLikeQueue();
 
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(likeCount);
+
+    useEffect(() => {
+        const unsubscribe = onLikeCountChange(postId, (likes) => {
+            setLikes(likes);
+        });
+        return () => { unsubscribe()};
+    }, [onLikeCountChange, postId]);
 
     useEffect(() => {
         // change ui
@@ -20,7 +27,7 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
         // add/remove like from post and update ui
         ((liked: boolean) => 
             updateLike(postId, liked)
-        )(isLiked);
+        )(!isLiked);
         setLikes((likes) => String(Number(likes) + (!isLiked ? 1 : -1)));
         setIsLiked(!isLiked);
     }

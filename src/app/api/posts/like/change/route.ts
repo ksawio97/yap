@@ -21,12 +21,13 @@ export async function POST(req: NextRequest) {
 
     const likes = await actions.likePosts(userId, likeList);
     const dislikes = await actions.dislikePosts(userId, dislikeList);
+    
     return createResponse({
         message: 'Success',
         status: 200,
         data: {
-            likes,
-            dislikes
+            likes: Array.from(likes.entries()),
+            dislikes: Array.from(dislikes.entries())
         }
     })
 }

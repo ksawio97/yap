@@ -22,21 +22,21 @@ export async function getPostsLikesInfo(postsIds: string[], userId?: string): Pr
         return new Map();
     const redisIds = postsIds.map((postId) => getLikeCountKey(postId));
 
-
     const pipe = redis.multi();
     pipe.mGet(redisIds);
     if (userId)
         pipe.smIsMember(getWhatLikedKey(userId), postsIds);
 
     const results = await pipe.exec();
-    const [likeCounts, likedList] = [results[0] as string[] | undefined | null, results[1] as string[] | undefined | null];
+    const [likeCounts, likedList] = [results[0] as string[] | undefined | null, results[1] as boolean[] | undefined | null];
     if (!likeCounts)
+
         return new Map();
 
     return new Map(likeCounts.map((likeCount, i) => (
         [ postsIds[i],
         { count: likeCount || '0',
-          liked: (likedList ? likedList[i] : '0') === '1', }]
+          liked: (likedList ? likedList[i] : false) }]
     )));
 }
 
@@ -57,7 +57,6 @@ async function modifyPost(userId: string, postId: string, operation: 'incr' | 'd
     pipe[operation === 'incr' ? 'sAdd' : 'sRem'](getWhatLikedKey(userId), postId);
 
     const results = await pipe.exec();
-    console.log(results[1]);
     return results[0] as (number | undefined | null) || 0;
 }
 
@@ -65,7 +64,7 @@ async function modifyPosts(userId: string, postsIds: string[], operation: 'incr'
     if (postsIds.length === 0)
         return new Map<string, (number | null)>();
 
-    const shouldBeLiked = operation === 'incr'; 
+    const shouldBeLiked = operation !== 'incr'; 
     const whatUserLikedKey = getWhatLikedKey(userId);
 
     const pipe = redis.multi();
@@ -84,6 +83,7 @@ async function modifyPosts(userId: string, postsIds: string[], operation: 'incr'
         const likeCountKey = getLikeCountKey(postsIds[i]);
         pipe[operation](likeCountKey);
     });
+
     if (assignPostIds.length === 0)
         return new Map<string, (number | null)>();
     
@@ -95,6 +95,7 @@ async function modifyPosts(userId: string, postsIds: string[], operation: 'incr'
     
     // run all commands together
     const results = await pipe.exec();
+
     const postsLikes: Map<string, (number | null)> = new Map();
     // assign likes to posts likes count
     results.forEach((result, i) => {

@@ -7,5 +7,6 @@ export async function GET(req: NextRequest) {
   const userId = await getUserIdFromSession(req);
   const posts = await getParentPosts(); // Adjust accordingly
   const postsWithLikeInfo = await attachLikesInfoToPosts(posts, userId || undefined);
+
   return NextResponse.json(postsWithLikeInfo);
 }

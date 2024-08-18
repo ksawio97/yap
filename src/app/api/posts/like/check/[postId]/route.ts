@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
     if (postNotFound)
         return postNotFound;
     
-    // TODO delete this line, redis shouldn't be used outside db folder 
     const { count } = await getPostLikesInfo(postId);
     return createResponse({
         message: 'Success',

@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         message: 'Success',
         status: 200,
         data: {
-            likes
+            likes: Array.from(likes.entries())
         }
     })
 }
