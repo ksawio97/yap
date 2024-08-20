@@ -101,3 +101,15 @@ export async function getPostsByUserId(userId: string, limit: number = 50) {
     
   return posts;
 }
+
+export async function getPostsByIds(postsIds: string[]) {
+  const posts = await prisma.post.findMany({
+    where: {
+      id: {
+        in: postsIds,
+      }
+    }
+  });
+
+  return posts;
+}

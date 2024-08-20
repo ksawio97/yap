@@ -1,5 +1,9 @@
 import { redis } from "../redis/client";
 import { getLikeCountKey, getWhatLikedKey } from "../redis/keys";
+import { dislike, areLikesCounted, like } from "../redis/post_like_count";
+import { areLiked, markDislike, markLike } from "../redis/user_liked";
+import { getPostById, getPostsByIds } from "./posts";
+import { getUserById } from "./users";
 
 export async function getPostLikesInfo(postId: string, userId?: string) {
     const pipe = redis.multi();
@@ -47,17 +51,26 @@ async function arePostsLiked(userId: string, postIds: string[]) {
     return isLiked;
 } 
 
-// TODO ensure that modifications like incr and decr are always done by existing user and post
 async function modifyPost(userId: string, postId: string, operation: 'incr' | 'decr') {
-    const pipe = redis.multi();
 
-    const likeCountKey = getLikeCountKey(postId);
+    // user doesn't exist
+    if (!await getUserById(userId))
+        return null;
 
-    pipe[operation](likeCountKey);
-    pipe[operation === 'incr' ? 'sAdd' : 'sRem'](getWhatLikedKey(userId), postId);
+    // post doesn't exist in redis
+    if (!(await areLikesCounted([postId]))[0]) {
+        // post doesn't exist
+        if (!await getPostById(postId))
+            return null;
+    }
+    let count = 0;
+    if (operation === 'incr') {
+        count = (await Promise.all([like([postId]), markLike(userId, [postId])]))[0].get(postId) || 0;
+    } else {
+        count = (await Promise.all([dislike([postId]), markDislike(userId, [postId])]))[0].get(postId) || 0;
+    }
 
-    const results = await pipe.exec();
-    return results[0] as (number | undefined | null) || 0;
+    return count;
 }
 
 async function modifyPosts(userId: string, postsIds: string[], operation: 'incr' | 'decr') {
@@ -65,42 +78,39 @@ async function modifyPosts(userId: string, postsIds: string[], operation: 'incr'
         return new Map<string, (number | null)>();
 
     const shouldBeLiked = operation !== 'incr'; 
-    const whatUserLikedKey = getWhatLikedKey(userId);
 
-    const pipe = redis.multi();
 
-    const assignPostIds: string[] = [];
+    const toModify: string[] = [];
 
-    const areLiked = await redis.smIsMember(whatUserLikedKey, postsIds);
-    areLiked.forEach((isLiked, i) => {
+    const likesCounted = await areLikesCounted(postsIds);
+    const likedInfo = await areLiked(userId, postsIds);
+    const checkIfPostsExist: string[] = []
+
+    likedInfo.forEach((isLiked, i) => {
         // skip when different than expected
-        if (isLiked !== shouldBeLiked)
-            return;
-        
-        // remember to which post assign like count to
-        assignPostIds.push(postsIds[i]);
-        // schedule incr or decr command
-        const likeCountKey = getLikeCountKey(postsIds[i]);
-        pipe[operation](likeCountKey);
-    });
+        if (likesCounted)
+            if (isLiked !== shouldBeLiked)
+                return;
+        else {
+            // if does exist it can be liked, if likes aren't counted, we can't dislike
+            if (shouldBeLiked)
+                checkIfPostsExist.push(postsIds[i]);
+            return;            
+        }
 
-    if (assignPostIds.length === 0)
+        toModify.push(postsIds[i]);
+    });
+    toModify.push(...(await getPostsByIds(checkIfPostsExist)).map(post => post.id));
+
+    if (toModify.length === 0)
         return new Map<string, (number | null)>();
     
+    let postsLikes: Map<string, (number | null)>
     if (operation === 'incr') {
-        await redis.sAdd(whatUserLikedKey, assignPostIds);
+        postsLikes = (await Promise.all([like(toModify), markLike(userId, toModify)]))[0];
     } else {
-        await redis.sRem(whatUserLikedKey, assignPostIds);
+        postsLikes = (await Promise.all([dislike(toModify), markDislike(userId, toModify)]))[0];
     }
-    
-    // run all commands together
-    const results = await pipe.exec();
-
-    const postsLikes: Map<string, (number | null)> = new Map();
-    // assign likes to posts likes count
-    results.forEach((result, i) => {
-        postsLikes.set(assignPostIds[i], result as (number | undefined | null) || 0); 
-    }); 
     
     return postsLikes;
 }
