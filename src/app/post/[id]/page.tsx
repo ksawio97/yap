@@ -8,7 +8,7 @@ import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
 import { useRouter } from "next/navigation";
-import { getAdditionalPostDetailedItemsList } from "@/yap/components/getAdditionalItemsList";
+import getAdditionalPostDetailedItemsList from "@/yap/components/getAdditionalPostDetailedItemsList";
 
 export default function PostDetails() {
     const router = useRouter();
@@ -43,7 +43,7 @@ export default function PostDetails() {
             {!post || !replies ? <Loading></Loading> :
                 <>
                     <section id="post" className="py-4">
-                        <Post post={post} getAdditionalListItems={(p) => getAdditionalPostDetailedItemsList(p as PostDetailedModel)}></Post>
+                        <Post post={post} additionalInfoListItems={getAdditionalPostDetailedItemsList(post)}></Post>
                     </section>
                     {   replies.length == 0 ? <></> :
                         <section id="replies">

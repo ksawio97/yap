@@ -4,21 +4,21 @@ import React, {
   createContext,
   ReactNode,
   useContext,
-  useState,
   useEffect,
+  useMemo,
+  useRef,
 } from "react";
 import ChangeManager from "../ChangeManager";
+import useDynamicInterval from "./useDynamicInterval";
 
 // Define the shape of the context
 interface LikeQueueContextType {
-  likeQueue: Record<string, { liked: boolean }>;
   updateLike: (postId: string, liked: boolean) => void;
   onLikeCountChange: (postId: string, onChange: (postId: string) => void) => () => boolean;
 }
 
 // Default context values
 const defaultLikeQueueContextValue: LikeQueueContextType = {
-  likeQueue: {},
   updateLike: () => {},
   onLikeCountChange: () => () => false,
 };
@@ -28,31 +28,39 @@ const LikeQueueContext = createContext<LikeQueueContextType>(
   defaultLikeQueueContextValue
 );
 
+function getChangeApiRequestParams(likes: Record<string, { liked: boolean }>) {
+  // assign which one should be liked or disliked
+  const likePostsIds: string[] = [];
+  const dislikePostsIds: string[] = [];
+
+  Object.entries(likes).forEach(([k, v]) => {
+    if (v.liked) {
+      likePostsIds.push(k);
+    } else {
+      dislikePostsIds.push(k);
+    }
+  });
+  // no changes, no need for fetch request
+  if (!likePostsIds.length && !dislikePostsIds.length)
+    return null;
+  return { likePostsIds, dislikePostsIds };
+}
+
 // Create the provider component
 export function LikeQueueProvider({ children }: { children: ReactNode }) {
-  const likeCountChangedManager = new ChangeManager<string, string>();
-  const [likeQueue, setLikeQueue] = useState<
+  const likeCountChangedManager = useMemo(() => new ChangeManager<string, string>(), []);
+  const likeQueue = useRef<
     Record<string, { liked: boolean }>
   >({});
 
   const processLikes = async (likes: Record<string, { liked: boolean }>) => {
-    // assign which one should be liked or disliked
-    const likePostsIds: string[] = [];
-    const dislikePostsIds: string[] = [];
-
-    Object.entries(likes).forEach(([k, v]) => {
-      if (v.liked) {
-        likePostsIds.push(k);
-      } else {
-        dislikePostsIds.push(k);
-      }
-    });
-    // no changes, no need for fetch request
-    if (!likePostsIds.length && !dislikePostsIds.length)
+    const params = getChangeApiRequestParams(likes);
+    if (!params)
       return;
+    const { likePostsIds, dislikePostsIds } = params;
 
-    // TODO fetch request to bulk update likes count
-    fetch(`/api/posts/like/change`, {
+
+    await fetch(`/api/posts/like/change`, {
       method: "POST",
       body: JSON.stringify({ likePostsIds, dislikePostsIds }),
     }).then((response) => {
@@ -69,18 +77,18 @@ export function LikeQueueProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      processLikes({ ...likeQueue });
-      setLikeQueue({});
-    }, 1000 * 30 /* 30s */);
-
-    return () => clearInterval(interval);
-  }, [likeQueue]);
+  useDynamicInterval(() => {
+    processLikes({ ...likeQueue.current });
+    likeQueue.current = {};
+  }, 1000 * 30 /* 30s */);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      processLikes({ ...likeQueue });
+      const params = getChangeApiRequestParams(likeQueue.current);
+      if (!params)
+        return;
+      // safer than fetch for beforeUnload
+      navigator.sendBeacon('/api/posts/like/change', JSON.stringify(params));
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
 
@@ -91,10 +99,10 @@ export function LikeQueueProvider({ children }: { children: ReactNode }) {
 
   // Function to update the like state
   const updateLike = (postId: string, liked: boolean) => {
-    setLikeQueue((prevQueue) => ({
-      ...prevQueue,
+    likeQueue.current = {
+      ...likeQueue.current,
       [postId]: { liked },
-    }));
+    }
   };
 
   const onLikeCountChange = (postId: string, onChange: (likes: string) => void) => {
@@ -103,7 +111,6 @@ export function LikeQueueProvider({ children }: { children: ReactNode }) {
 
   // Context value
   const contextValue: LikeQueueContextType = {
-    likeQueue,
     updateLike,
     onLikeCountChange,
   };

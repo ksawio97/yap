@@ -9,14 +9,16 @@ import HoverIconWithPopup from "../icons/hover/HoverIconWithPopup";
 import PostDetailedModel from "@/yap/db/models/PostDetailedModel";
 import { ReactNode } from "react";
 import PostLike from "./PostLike";
+import useTimeAgo from "@/yap/libs/hooks/useTimeAgo";
 
 type PostProps = {
     post: PostModel | PostDetailedModel,
-    getAdditionalListItems: (post: PostModel | PostDetailedModel) => ReactNode,
+    additionalInfoListItems?: ReactNode 
 }
 
-export default function Post({ post, getAdditionalListItems }: PostProps) {
+export default function Post({ post, additionalInfoListItems }: PostProps) {
     const router = useRouter();
+    const { timeAgo } = useTimeAgo(new Date(post.published));
     
     return (
         <article className="w-full flex flex-row">
@@ -26,9 +28,9 @@ export default function Post({ post, getAdditionalListItems }: PostProps) {
             <div className="flex flex-col w-full">
                 <div className="w-full flex flex-row gap-2">
                     <h3 className="text-white font-bold">{post.author.name}</h3>
-                    {/* TODO update timeAgo every 1 minute */}
                     <ul className="font-light text-gray-400 flex flex-row gap-1">
-                        {getAdditionalListItems(post)}
+                        <li>{timeAgo}</li>
+                        {additionalInfoListItems}
                     </ul>
                 </div>
                 <p className="p-1">{post.content}</p>

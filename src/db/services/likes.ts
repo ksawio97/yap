@@ -78,28 +78,30 @@ async function modifyPosts(userId: string, postsIds: string[], operation: 'incr'
         return new Map<string, (number | null)>();
 
     const shouldBeLiked = operation !== 'incr'; 
-
-
     const toModify: string[] = [];
 
     const likesCounted = await areLikesCounted(postsIds);
     const likedInfo = await areLiked(userId, postsIds);
     const checkIfPostsExist: string[] = []
+    console.log({ likesCounted, likedInfo });
 
     likedInfo.forEach((isLiked, i) => {
         // skip when different than expected
         if (likesCounted)
+            console.log({ likesCounted, skip: isLiked !== shouldBeLiked});
             if (isLiked !== shouldBeLiked)
                 return;
         else {
             // if does exist it can be liked, if likes aren't counted, we can't dislike
-            if (shouldBeLiked)
-                checkIfPostsExist.push(postsIds[i]);
-            return;            
+            if (shouldBeLiked) {
+                checkIfPostsExist.push(postsIds[i]);       
+                return;
+            }
         }
 
         toModify.push(postsIds[i]);
     });
+    console.log(toModify);
     toModify.push(...(await getPostsByIds(checkIfPostsExist)).map(post => post.id));
 
     if (toModify.length === 0)

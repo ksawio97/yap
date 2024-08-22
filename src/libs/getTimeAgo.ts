@@ -4,7 +4,7 @@ const MS_PER_DAY = MS_PER_HOUR * 24;
 const MS_PER_MONTH = MS_PER_DAY * 30;
 const MS_PER_YEAR = MS_PER_DAY * 365;
 
-export default function timeAgo(time: Date): string {
+export default function getTimeAgo(time: Date): string {
     const now = Date.now();
     const then = time.getTime();
     
