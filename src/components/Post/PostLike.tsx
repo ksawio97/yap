@@ -4,9 +4,8 @@ import LikeIcon from "../icons/LikeIcon";
 import ClickedLikeIcon from "../icons/ClickedLikeIcon";
 import { useLikeQueue } from "@/yap/libs/hooks/useLike";
 
-// TODO update parent post prop like variable to be up to date without much rerendering
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {
-    const { updateLike, onLikeCountChange } = useLikeQueue();
+    const { updateLike, onLikeCountChange, getLikeUpdate } = useLikeQueue();
 
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(likeCount);
@@ -22,6 +21,17 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
         // change ui
         setIsLiked(liked);
     }, [liked]);
+
+    // check like updates that will be sent to server and update UI
+    useEffect(() => {
+        const likeUpdate = getLikeUpdate(postId);
+        if (!likeUpdate)
+            return;
+        if (isLiked === likeUpdate.liked)
+            return;
+        setIsLiked(likeUpdate.liked);
+        setLikes(likes => String(Number(likes) + (likeUpdate.liked ? 1 : -1)))
+    }, [postId, getLikeUpdate, isLiked]);
 
     const isLikedChange = () => {
         // add/remove like from post and update ui

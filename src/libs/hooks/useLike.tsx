@@ -10,17 +10,21 @@ import React, {
 } from "react";
 import ChangeManager from "../ChangeManager";
 import useDynamicInterval from "./useDynamicInterval";
+import { isNull } from "util";
 
 // Define the shape of the context
 interface LikeQueueContextType {
   updateLike: (postId: string, liked: boolean) => void;
   onLikeCountChange: (postId: string, onChange: (postId: string) => void) => () => boolean;
+  getLikeUpdate: (postId: string) => { liked: boolean } | null;
 }
 
 // Default context values
 const defaultLikeQueueContextValue: LikeQueueContextType = {
   updateLike: () => {},
   onLikeCountChange: () => () => false,
+  // should be used on page load to track not sent changes
+  getLikeUpdate: () => null,
 };
 
 // Create the context
@@ -99,20 +103,30 @@ export function LikeQueueProvider({ children }: { children: ReactNode }) {
 
   // Function to update the like state
   const updateLike = (postId: string, liked: boolean) => {
-    likeQueue.current = {
-      ...likeQueue.current,
-      [postId]: { liked },
+    // if change should be called off to previous stage
+    if (postId in likeQueue.current && likeQueue.current[postId].liked !== liked) {
+      const nextLikeQueue = likeQueue.current;
+      delete nextLikeQueue[postId];
+      likeQueue.current = nextLikeQueue;
+    } else {
+      likeQueue.current = {
+        ...likeQueue.current,
+        [postId]: { liked },
+      }
     }
   };
 
   const onLikeCountChange = (postId: string, onChange: (likes: string) => void) => {
     return likeCountChangedManager.subscribe(postId, onChange);
   };
+  
+  const getLikeUpdate = (postId: string) => postId in likeQueue.current ? likeQueue.current[postId] : null;
 
   // Context value
   const contextValue: LikeQueueContextType = {
     updateLike,
     onLikeCountChange,
+    getLikeUpdate
   };
 
   return (
