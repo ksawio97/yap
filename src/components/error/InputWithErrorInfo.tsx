@@ -1,4 +1,3 @@
-import ErrorInfo from "./ErrorInfo";
 import ErrorInfoList from "./ErrorInfoList";
 
 export type InputWithErrorInfoProps = {

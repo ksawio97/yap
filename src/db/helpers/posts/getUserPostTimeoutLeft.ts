@@ -8,8 +8,7 @@ export default async function getUserPostTimeoutLeft(userId: string) {
     const now = Date.now();
     
     const difference = now - lastPublishDate.getTime();
-    console.log(difference);
-    console.log(USER_POST_TIMEOUT - difference);
+
     if (difference < USER_POST_TIMEOUT)
         return USER_POST_TIMEOUT - difference;
     return 0;

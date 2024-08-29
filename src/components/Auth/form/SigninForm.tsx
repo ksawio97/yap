@@ -2,7 +2,7 @@
 
 import authenticate from "@/yap/app/actions/auth/authenticate"
 import { useFormState } from "react-dom"
-import ErrorInfo from "../error/ErrorInfo";
+import ErrorInfo from "../../error/ErrorInfo";
 
 export default function SigninForm({ csrfToken } : {csrfToken: string}) {
     const [formState, action] = useFormState(authenticate, undefined);

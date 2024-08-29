@@ -3,26 +3,29 @@
 import PostForm from "@/yap/components/Post/PostForm";
 import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import PostList from "@/yap/components/Post/PostList";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PostModel from "../db/models/PostModel";
 import Loading from "../components/Loading";
 import ContentAsPageWrapper from "../components/Wrappers/ContentAsPageWrapper";
 
 export default function Home() {
   const [posts, setPosts] = useState<PostModel[] | undefined>();
+
+  const getPosts = useCallback((async () => {
+    fetch('/api/posts')
+      .then(
+        (value) => value.json(), 
+        (rejection) => setPosts([]))
+      .then((value) => {
+          const posts = value as PostModel[];
+          setPosts(posts);
+      })
+      .catch((rejected) => setPosts([]));
+  }), []);
+
   useEffect(() => {
-    (async () => {
-      fetch('/api/posts')
-        .then(
-          (value) => value.json(), 
-          (rejection) => setPosts([]))
-        .then((value) => {
-            const posts = value as PostModel[];
-            setPosts(posts);
-        })
-        .catch((rejected) => setPosts([]));
-    })()
-  }, [])
+    getPosts();
+  }, [getPosts])
 
   return (
       <ContentAsPageWrapper>
@@ -31,7 +34,7 @@ export default function Home() {
             <div className="px-4">
               <ProfilePicture sizeMultiplier={1}></ProfilePicture>
             </div>
-            <PostForm></PostForm>
+            <PostForm onPostCreated={getPosts}></PostForm>
           </div>
           { !posts ? <Loading/> :
             <PostList posts={posts}></PostList>

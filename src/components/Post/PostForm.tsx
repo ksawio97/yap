@@ -1,5 +1,9 @@
 'use client'
-import { memo, useRef, useState } from "react";
+import create from "@/yap/app/actions/post/create";
+import { memo, useEffect, useRef, useState } from "react";
+import { useFormState } from "react-dom";
+import ErrorInfo from "../error/ErrorInfo";
+import DisappearAfterDelayWrapper from "../Wrappers/DisappearAfterDelayWrapper";
 
 
 // if CircleChart is under this% it won't show up
@@ -22,24 +26,35 @@ const CircleChart = memo(function CircleChart({ percent }: {percent: number}) {
         </>
     )
 }, (prev, next) => 
-    // props are equal or they are both under 20% (no need to change chart)
+    // props are equal or they are both under minimumChartPercent (no need to change chart)
         prev.percent === next.percent || (prev.percent < minimumChartPercent && next.percent < minimumChartPercent)
 );
+const CHARS_LIMIT = 4_000;
 
-export default function PostForm() {
-    const charsLimit = 4_000;
+function getTextAreaCharsLength(element: HTMLTextAreaElement | null) : number {
+    if (element == null)
+        return 0;
+    return element.value.length / CHARS_LIMIT * 100;
+}
 
+export default function PostForm({ onPostCreated }: { onPostCreated: () => void }) {
+    const [formState, action] = useFormState(create, undefined);
     const textAreaHandle = useRef<HTMLTextAreaElement>(null);
     const [charsPercentUsed, setCharsPercentUsed] = useState(0);
 
-    function getTextAreaCharsLength() : number {
-        if (textAreaHandle.current == null)
-            return 0;
-        return textAreaHandle.current.value.length / charsLimit * 100;
-    }
+    useEffect(() => {
+        if (formState && !formState.error) {
+            onPostCreated();
+            // clear textarea
+            if (textAreaHandle.current) {
+                textAreaHandle.current.value = "";
+                handlePostContentChange()
+            }
+        }
+    }, [formState, onPostCreated]);
 
     function handlePostContentChange() {
-        setCharsPercentUsed(getTextAreaCharsLength());
+        setCharsPercentUsed(getTextAreaCharsLength(textAreaHandle.current));
 
         if (textAreaHandle.current == null)
             return;
@@ -49,16 +64,22 @@ export default function PostForm() {
         textAreaHandle.current.style.height = `${textAreaHandle.current.scrollHeight}px`;
     }
     
-    // TODO on form submit replace multiple new lines with just one
     return (
-        <form className="w-full flex flex-col divide-y divide-slate-400 space-y-4 h-fit pr-6">
+        <form className="w-full flex flex-col space-y-4 h-fit pr-6" action={action}>
             <textarea className="bg-transparent resize-none"
                 placeholder="Post Content"
                 ref={textAreaHandle}
                 onInput={handlePostContentChange}
                 style={{maxHeight: "60vh"}}
-                maxLength={charsLimit}>
+                maxLength={CHARS_LIMIT}
+                name="content">
             </textarea>
+            { formState && formState.error && formState.message && (
+                <DisappearAfterDelayWrapper delayMs={4000}>
+                    <ErrorInfo error={formState.message}></ErrorInfo>
+                </DisappearAfterDelayWrapper>)}
+            
+            <div className="h-px w-full bg-slate-400"></div>
             <div className="w-full flex flex-row-reverse p-4 gap-4 justify-items-center">
                 <button type="submit" className="bg-amber-500 justify-self-end w-24 h-9 rounded-md">Post</button>
                 {/* character limit chart */}
