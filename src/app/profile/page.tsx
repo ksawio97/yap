@@ -8,6 +8,13 @@ import PostModel from "@/yap/db/models/PostModel";
 import useSessionState from "@/yap/libs/hooks/useSessionState";
 import { useEffect, useState } from "react";
 
+
+const getPostsCountText = (posts: any[] | undefined) => {
+  if (!posts || posts.length === 0) 
+    return "";
+  return `${posts.length} ${posts.length === 1 ? "post" : "posts"}`;
+}
+
 export default function Profile() {
     const [bio, setBio] = useState("");
     const [posts, setPosts] = useState<PostModel[] | undefined>();
@@ -42,9 +49,9 @@ export default function Profile() {
             <ProfilePicture sizeMultiplier={2}></ProfilePicture>
           </div>
           <div className="flex flex-col">
-            <div className="font-light text-gray-400 flex flex-row gap-1">
+            <div className="font-light text-gray-400 flex flex-row gap-2 items-center">
               <h3 className="text-white font-bold md:text-3xl text-2xl">{session && session.user ? session?.user?.name : 'You need to sign in'}</h3>
-              {/* <p>TODO add posts count</p> */}
+              <p className="text-center">{getPostsCountText(posts)}</p>
             </div>
             <p>{bio}</p>
           </div>
