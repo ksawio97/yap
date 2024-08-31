@@ -1,7 +1,7 @@
 import changePassword from "@/yap/app/actions/auth/changePassword";
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import ErrorInfoList from "../error/ErrorInfoList";
+import ErrorInfoList from "../../error/ErrorInfoList";
 import { useRouter } from "next/navigation";
 import SuccessInfoGoBack from "../SuccessInfoWithButton";
 

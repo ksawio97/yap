@@ -71,6 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
+    // note: middleware should redirect to this page regardless
     signIn: '/auth/signin'
   }
 })

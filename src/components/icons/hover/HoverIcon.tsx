@@ -1,28 +1,25 @@
 'use client'
 
-import { memo } from "react";
+import { CSSProperties, memo } from "react";
 import HoverIconProps from "./HoverIconProps";
+import styles from './HoverIcon.module.css';
+
+// enables setting dynamic colors to static css stylesheet
+type HoverIconCSSProperties = CSSProperties & {
+    '--color'?: string;
+    '--hoverColor'?: string;
+}
 
 const HoverIcon = memo(function HoverIcon({color, hoverColor, content, icon, handleOnClick}: HoverIconProps) {
+    const style: HoverIconCSSProperties = {
+        '--color': color,
+        '--hoverColor': hoverColor,
+    };
+
     return (
         <>
-            <style jsx>{`
-                .hover-icon {
-                    stroke: ${color};
-                }
-
-                .hover-icon > p {
-                    user-select: none;
-                }
-                    
-                .hover-icon:hover div {
-                    stroke: ${hoverColor};
-                    color: ${hoverColor};
-                    box-shadow: ${hoverColor} 0px 0px 128px 14px;
-                    border-radius: 50%;
-                }
-            `}</style>
-            <div className="flex flex-row gap-1 hover-icon w-fit p-2 select-none" onClick={handleOnClick}>
+            <div className={`flex flex-row gap-1 ${styles.hoverIcon} w-fit p-2 select-none`} onClick={handleOnClick} style={style}>
+                <span className={`${styles.iconShadow}`}></span>
                 <div className="w-fit h-fit shadow">
                     {icon}
                 </div>

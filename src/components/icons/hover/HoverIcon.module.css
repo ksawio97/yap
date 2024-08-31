@@ -1,0 +1,17 @@
+.hoverIcon {
+    stroke: var(--color);
+}
+
+.hoverIcon > p {
+    user-select: none;
+}
+
+.hoverIcon:hover div {
+    stroke: var(--hoverColor);
+    color: var(--hoverColor);
+}
+
+.hoverIcon:hover > .iconShadow {
+    box-shadow: var(--hoverColor) 0px 0px 128px 14px;
+    border-radius: 50%;
+}

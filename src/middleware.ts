@@ -8,11 +8,15 @@ const authPaths = ['/auth/signin', '/auth/signup', '/api/auth/signin'];
 
 export async function middleware(req: NextRequest) {
     const token = await getRequestJwtToken(req);
+    const pathname = req.nextUrl.pathname;
 
-    if (authPaths.some(path => req.nextUrl.pathname.startsWith(path))) {
-      if (token) {
+    if (token) {
+      if (authPaths.some(path => pathname.startsWith(path))) {
         return NextResponse.redirect(getURL('/'));
       }
+    } else {
+      if (pathname.startsWith('/api/auth/signin'))
+        return NextResponse.redirect(getURL('/auth/signin'))
     }
   
     // Allow the request to continue if the user is not authenticated

@@ -2,7 +2,7 @@
 
 import resetPassword from "@/yap/app/actions/auth/resetPassword";
 import { useFormState } from "react-dom";
-import ErrorInfo from "../error/ErrorInfo";
+import ErrorInfo from "../../error/ErrorInfo";
 import { FormEvent, useEffect, useState } from "react";
 import Loading from "../../Loading";
 
