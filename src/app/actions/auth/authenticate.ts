@@ -44,9 +44,5 @@ export default async function authenticate(prevState: AuthenticateState | undefi
         }
     }
 
-    redirect('/');
-    return {
-        message: "Success",
-        error: false
-    }
+    redirect('/?refresh=1');
 }

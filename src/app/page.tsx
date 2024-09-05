@@ -3,10 +3,11 @@
 import PostForm from "@/yap/components/Post/PostForm";
 import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import PostList from "@/yap/components/Post/PostList";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import PostModel from "../db/models/PostModel";
 import Loading from "../components/Loading";
 import ContentAsPageWrapper from "../components/Wrappers/ContentAsPageWrapper";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [posts, setPosts] = useState<PostModel[] | undefined>();
@@ -29,6 +30,9 @@ export default function Home() {
 
   return (
       <ContentAsPageWrapper>
+        <Suspense>
+          <RefreshHandler></RefreshHandler>
+        </Suspense>
         <main className="divide-y divide-white">
           <div className="w-full flex flex-row">
             <div className="px-4">
@@ -43,4 +47,17 @@ export default function Home() {
         </main>
       </ContentAsPageWrapper>
   );
+}
+
+
+function RefreshHandler() {
+  // it's used for page refresh by sign in reroute
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('refresh') === '1') {
+      window.location.replace('/');
+    }
+  }, [searchParams]);
+
+  return null;
 }
