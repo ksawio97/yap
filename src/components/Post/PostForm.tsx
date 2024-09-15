@@ -25,7 +25,7 @@ export default function PostForm({ onPostCreated }: { onPostCreated: () => void 
     }, [postContent]);
     return (
         <form className="w-full flex flex-col space-y-4 h-fit pr-6" action={action}>
-            <PostContentInput errorMessage={formState?.message || null} charsLimit={CHARS_LIMIT} value={postContent} onChange={(e) => setPostContent(e.target.value)}> 
+            <PostContentInput errorMessage={formState?.error ? formState?.message || null : null} charsLimit={CHARS_LIMIT} value={postContent} onChange={(e) => setPostContent(e.target.value)}> 
             </PostContentInput>
             
             <div className="h-px w-full bg-slate-400"></div>

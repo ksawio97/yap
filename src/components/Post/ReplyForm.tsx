@@ -29,7 +29,7 @@ export default function ReplyForm({ replyToId, onPostCreated }: { replyToId: str
             <input name="parentId" type="hidden" defaultValue={replyToId}></input>
             <div className="flex flex-row">
                 <div className="w-full p-3 border-solid rounded border-2 border-opacity-35">
-                    <PostContentInput errorMessage={formState?.message || null} charsLimit={CHARS_LIMIT} value={postContent} onChange={(e) => setPostContent(e.target.value)}> 
+                    <PostContentInput errorMessage={formState?.error ? formState?.message || null : null} charsLimit={CHARS_LIMIT} value={postContent} onChange={(e) => setPostContent(e.target.value)}> 
                     </PostContentInput>
                 </div>
                 <div className="flex flex-col p-2 gap-y-2">
