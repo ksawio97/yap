@@ -116,11 +116,12 @@ export async function getPostsByIds(postsIds: string[]) {
   return posts;
 }
 
-export async function createPost(userId: string, content: string) {
+export async function createPost(userId: string, content: string, parentId: string | null = null) {
   const post = await prisma.post.create({
     data: {
       content: content,
       authorId: userId,
+      parentId: parentId
     }
   });
 

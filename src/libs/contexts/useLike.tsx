@@ -9,8 +9,7 @@ import React, {
   useRef,
 } from "react";
 import ChangeManager from "../ChangeManager";
-import useDynamicInterval from "./useDynamicInterval";
-import { isNull } from "util";
+import useDynamicInterval from "@/yap/libs/hooks/useDynamicInterval";
 
 // Define the shape of the context
 interface LikeQueueContextType {

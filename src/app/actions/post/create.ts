@@ -35,7 +35,8 @@ export default async function create(prevState: PostCreateState | undefined, for
         }
 
     const reformedContent = reformPostContent(content.toString());
-    await createPost(userId, reformedContent);
+    const parentId = formData.get('parentId')?.toString();
+    await createPost(userId, reformedContent, parentId);
     return {
         message: 'Success',
         error: false

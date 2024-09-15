@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HoverIcon from "../icons/hover/HoverIcon";
 import LikeIcon from "../icons/LikeIcon";
 import ClickedLikeIcon from "../icons/ClickedLikeIcon";
-import { useLikeQueue } from "@/yap/libs/hooks/useLike";
+import { useLikeQueue } from "@/yap/libs/contexts/useLike";
 
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {
     const { updateLike, onLikeCountChange, getLikeUpdate } = useLikeQueue();
