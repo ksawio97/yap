@@ -3,7 +3,7 @@ import PostDetailedModel from '../models/PostDetailedModel';
 import { Prisma } from '@prisma/client';
 import { getLastPostPublishDate, setLastPostPublishDate } from '../redis/user_post';
 
-export async function getParentPosts(limit: number = 50) {
+export async function getPosts({ lastPostId, parentId = null, limit = 20 }: { lastPostId?: string | undefined, parentId?: string | null, limit?: number}) {
   const posts = await prisma.post.findMany({
     take: limit,
     include: {
@@ -17,7 +17,10 @@ export async function getParentPosts(limit: number = 50) {
       }
     },
     where: {
-      parentId: null,
+      AND: [
+        { id: { lt: lastPostId } }, // Fetch posts greater than the last post
+        { parentId: parentId }
+      ]
     },
     orderBy: {
       published: 'desc'
@@ -27,7 +30,7 @@ export async function getParentPosts(limit: number = 50) {
   return posts;
 }
 
-export async function getPostById(postId: string) {
+export async function getPostById(postId: string, repliesLimit: number = 20) {
   let post;
   try {
     post = await prisma.post.findUniqueOrThrow({
@@ -63,7 +66,11 @@ export async function getPostById(postId: string) {
                 name: true
               }
             }
-          }
+          },
+          orderBy: {
+            published: 'desc'
+          },
+          take: repliesLimit
         }
       }
     });
@@ -80,7 +87,7 @@ export async function getPostById(postId: string) {
   return post as PostDetailedModel;
 }
 
-export async function getPostsByUserId(userId: string, limit: number = 50) {
+export async function getPostsByUserId(userId: string, lastPostId?: string | undefined, limit: number = 20) {
   const posts = await prisma.post.findMany({
     take: limit,
     include: {
@@ -94,7 +101,10 @@ export async function getPostsByUserId(userId: string, limit: number = 50) {
       }
     },
     where: {
-      authorId: userId
+      AND: [
+        { id: { lt: lastPostId } }, // Fetch posts greater than the last post
+        { authorId: userId }
+      ]
     },
     orderBy: {
       published: 'desc'

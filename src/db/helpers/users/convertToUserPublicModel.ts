@@ -1,7 +1,7 @@
-import { User } from "@prisma/client";
+import { UserWithPostCount } from "../../services/users";
 
-export default function convertToUserPublicModel(user: User): UserPublicModel {
+export default function convertToUserPublicModel(user: UserWithPostCount): UserPublicModel {
     const { id, name, bio, image } = user;
 
-    return { id, name, bio, image };
+    return { id, name, bio, image, postCount: user._count.posts };
 }

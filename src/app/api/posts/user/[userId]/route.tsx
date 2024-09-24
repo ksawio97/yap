@@ -4,12 +4,14 @@ import getUserIdFromSession from '@/yap/libs/api/getUserIdFromSession';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-    const userId = req.nextUrl.toString().split('/').pop();
-
+    const userId = req.nextUrl.pathname.toString().split('/').pop();
+    
     if (userId === undefined) {
         return new NextResponse(JSON.stringify({ error: 'Query parameter userId is not defined' }), { status: 400 });
     }
-    const posts = await getPostsByUserId(userId);
+
+    const lastPostId = req.nextUrl.searchParams.get('lastPostId');
+    const posts = await getPostsByUserId(userId, lastPostId || undefined);
     if (posts === null) {
         return new NextResponse(JSON.stringify({ error: 'Posts not found' }), { status: 404 });
     }

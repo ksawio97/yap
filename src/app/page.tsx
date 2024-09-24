@@ -3,25 +3,22 @@
 import PostForm from "@/yap/components/Post/PostForm";
 import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import PostList from "@/yap/components/Post/PostList";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 import PostModel from "../db/models/PostModel";
-import Loading from "../components/Loading";
 import ContentAsPageWrapper from "../components/Wrappers/ContentAsPageWrapper";
 import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-  const [posts, setPosts] = useState<PostModel[] | undefined>();
-
-  const getPosts = useCallback((async () => {
-    fetch('/api/posts')
+  const getPosts = useCallback((async (lastPostId?: string | undefined) => {
+    return fetch(`/api/posts?lastPostId=${lastPostId}`)
       .then(
         (value) => value.json(), 
-        (rejection) => setPosts([]))
+        (rejection) => [])
       .then((value) => {
           const posts = value as PostModel[];
-          setPosts(posts);
+          return posts;
       })
-      .catch((rejected) => setPosts([]));
+      .catch((rejected) => []);
   }), []);
 
   useEffect(() => {
@@ -40,10 +37,7 @@ export default function Home() {
             </div>
             <PostForm onPostCreated={getPosts}></PostForm>
           </div>
-          { !posts ? <Loading/> :
-            <PostList posts={posts}></PostList>
-          }
-          
+            <PostList getPosts={getPosts}></PostList>
         </main>
       </ContentAsPageWrapper>
   );

@@ -3,10 +3,19 @@ import prisma from  '../client';
 import { User } from '@prisma/client';
 var bcrypt = require('bcryptjs');
 
-export async function getUserById(id: string) {
+export type UserWithPostCount = User & { _count: { posts: number; }; }
+
+export async function getUserById(id: string): Promise<UserWithPostCount | null> {
     const user = await prisma.user.findUnique({
         where: {
             id: id,
+        },
+        include: {
+            _count: {
+                select: {
+                    posts: true
+                }
+            },
         }
     });
 

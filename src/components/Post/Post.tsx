@@ -32,7 +32,7 @@ export default function Post({ post, additionalInfoListItems }: PostProps) {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="w-full flex flex-row gap-2">
-                        <h3 className="text-white font-bold">{post.author.name}</h3>
+                        {post.author && post.author.name && <h3 className="text-white font-bold">{post.author.name}</h3>}
                         <ul className="font-light text-gray-400 flex flex-row gap-1">
                             <li>{timeAgo}</li>
                             {additionalInfoListItems}

@@ -6,41 +6,34 @@ import ProfilePicture from "@/yap/components/Profile/ProfilePicture";
 import ContentAsPageWrapper from "@/yap/components/Wrappers/ContentAsPageWrapper";
 import PostModel from "@/yap/db/models/PostModel";
 import useSessionState from "@/yap/libs/hooks/useSessionState";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 
-const getPostsCountText = (posts: any[] | undefined) => {
-  if (!posts || posts.length === 0) 
-    return "";
-  return `${posts.length} ${posts.length === 1 ? "post" : "posts"}`;
+const getPostsCountText = (postCount: number) => {
+  return `${postCount} ${postCount === 1 ? "post" : "posts"}`;
 }
 
 export default function Profile() {
-    const [bio, setBio] = useState("");
-    const [posts, setPosts] = useState<PostModel[] | undefined>();
+    const [user, setUser] = useState<UserPublicModel>();
 
     const { session } = useSessionState((prev, curr) => prev?.user?.id !== curr?.user?.id);
     
     useEffect(() => {
-      const userId = session?.user?.id;
-      if (!userId) {
-        setPosts([]);
-        return;
-      }
+        fetch(`api/user/${session?.user!.id}`)
+          .then(value => { value.json().then(data => setUser(data))});
+    }, [session]);
 
-      fetch(`api/posts/user/${session?.user!.id}`)
+    const getPosts = useCallback(async (lastPostId?: string | undefined) => {
+      return fetch(`/api/posts/user/${session?.user!.id}?lastPostId=${lastPostId}`)
         .then(
           (value) => value.json(), 
-          (rejection) => console.error(rejection))
+          (rejection) => { console.error(rejection); return []})
         .then((value) => {
             const posts = value as PostModel[];
-            setPosts(posts);
+            return posts;
         })
-        .catch((rejected) => console.error(rejected));
-
-        fetch(`api/user/${session?.user!.id}`)
-          .then(value => { value.json().then(data => setBio(data.bio))});
-    }, [session]);
+        .catch((rejected) => { console.error(rejected); return [];});
+    }, [session?.user]);
 
     return (
       <ContentAsPageWrapper>
@@ -51,14 +44,12 @@ export default function Profile() {
           <div className="flex flex-col">
             <div className="font-light text-gray-400 flex flex-row gap-2 items-center">
               <h3 className="text-white font-bold md:text-3xl text-2xl">{session && session.user ? session?.user?.name : 'You need to sign in'}</h3>
-              <p className="text-center">{getPostsCountText(posts)}</p>
+              <p className="text-center">{getPostsCountText(user?.postCount || 0)}</p>
             </div>
-            <p>{bio}</p>
+            <p>{user?.bio}</p>
           </div>
         </div>
-        { !posts ? <Loading/> :
-            <PostList posts={posts}></PostList>
-          }
+        <PostList getPosts={getPosts}></PostList>
       </ContentAsPageWrapper>
     );
 }
