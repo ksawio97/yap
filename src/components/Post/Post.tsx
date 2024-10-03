@@ -28,7 +28,9 @@ export default function Post({ post, additionalInfoListItems }: PostProps) {
         <div className="flex flex-col">
             <article className="w-full flex flex-row flex-grow-0">
                 <div className="w-14 p-2">
-                    <ProfilePicture sizeMultiplier={1}></ProfilePicture>
+                    <div className="w-auto h-auto cursor-pointer" onClick={() => router.push(`/profile/${post.authorId}`)}>
+                        <ProfilePicture sizeMultiplier={1}></ProfilePicture>
+                    </div>
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="w-full flex flex-row gap-2">
