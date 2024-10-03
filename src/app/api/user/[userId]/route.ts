@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
         });
 
     const user = await getUserById(userId);
+    console.log(user);
     if (!user)
         return createResponse({
             message: 'User not found',
