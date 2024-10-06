@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const getPosts = useCallback((async (lastPostId?: string | undefined) => {
-    return fetch(`/api/posts?lastPostId=${lastPostId}`)
+    return fetch(`/api/posts${lastPostId ? `?lastPostId=${lastPostId}` : ""}`)
       .then(
         (value) => value.json(), 
         (rejection) => [])

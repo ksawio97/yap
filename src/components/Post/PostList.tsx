@@ -28,7 +28,6 @@ export default function PostList({ getPosts }: { getPosts: (lastPostId?: string 
                 dataLength={posts.length}
                 // if end is reached try get more
                 next={async () => {
-                    console.log('more');
                     const lastPostId = posts[posts.length - 1]?.id || undefined;
                     const olderPosts = await getPosts(lastPostId);
                     // no more is available, block trying to fetch more
