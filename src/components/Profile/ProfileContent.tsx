@@ -10,7 +10,7 @@ const getPostsCountText = (postCount: number) => {
     return `${postCount} ${postCount === 1 ? "post" : "posts"}`;
 }
 
-export default function ProfileContent({ user }: { user: UserPublicModel | undefined }) {
+export default function ProfileContent({ user, notFoundText = "Not Found" }: { user: UserPublicModel | undefined, notFoundText?: string }) {
 
     const getPosts = useCallback(async (lastPostId?: string | undefined) => {
         if (!user)
@@ -34,8 +34,8 @@ export default function ProfileContent({ user }: { user: UserPublicModel | undef
             </div>
             <div className="flex flex-col">
               <div className="font-light text-gray-400 flex flex-row gap-2 items-center">
-                <h3 className="text-white font-bold md:text-3xl text-2xl">{user ? user.name : 'Not found'}</h3>
-                <p className="text-center">{getPostsCountText(user?.postCount || 0)}</p>
+                <h3 className="text-white font-bold md:text-3xl text-2xl">{user ? user.name : notFoundText}</h3>
+                { user && <p className="text-center">{getPostsCountText(user?.postCount || 0)}</p> }
               </div>
               <p>{user?.bio}</p>
             </div>

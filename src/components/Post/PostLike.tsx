@@ -3,8 +3,10 @@ import HoverIcon from "../icons/hover/HoverIcon";
 import LikeIcon from "../icons/LikeIcon";
 import ClickedLikeIcon from "../icons/ClickedLikeIcon";
 import { useLikeQueue } from "@/yap/libs/contexts/useLike";
+import { useSession } from "next-auth/react";
 
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {
+    const { status } = useSession();
     const { updateLike, onLikeCountChange, getLikeUpdate } = useLikeQueue();
 
     const [isLiked, setIsLiked] = useState(false);
@@ -42,11 +44,13 @@ export default function PostLike({ postId, likeCount, liked } : { postId: string
         setIsLiked(!isLiked);
     }
     return (
-        <HoverIcon color="#64748b" hoverColor="red" content={likes} icon={
-            <DynamicLikeIcon liked={isLiked}></DynamicLikeIcon>
-        } handleOnClick={
-            () => isLikedChange()
-        }></HoverIcon>
+        <div className={`${status === "authenticated" /* block click if not logged in */ ? "" : "pointer-events-none"}`}>
+            <HoverIcon color="#64748b" hoverColor="red" content={likes} icon={
+                <DynamicLikeIcon liked={isLiked}></DynamicLikeIcon>
+            } handleOnClick={
+                () => { if (status === "authenticated") isLikedChange(); }
+            }></HoverIcon>
+        </div>
     );
 }
 

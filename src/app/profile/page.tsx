@@ -20,6 +20,6 @@ export default function Profile() {
     }, [session]);
 
     return (
-      <ProfileContent user={user}></ProfileContent>
+      <ProfileContent user={user} notFoundText={"You need to sign in"}></ProfileContent>
     )
 }
