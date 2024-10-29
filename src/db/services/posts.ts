@@ -138,6 +138,25 @@ export async function createPost(userId: string, content: string, parentId: stri
   await setLastPostPublishDate(post);
 }
 
+export async function deletePostByUser(postId: string, userId: string) {
+  try {
+    await prisma.post.delete({
+      where: {
+        id: postId,
+        authorId: userId
+      }
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2025' || e.code === 'P2016') {
+        return { error: 'Post not found with specified id and authorId' };
+      }
+    }
+    return { error: 'Post deletion failed' };
+  }
+    return { };
+}
+
 export async function getLastUserPostPublishDate(userId: string) {
   const published = await getLastPostPublishDate(userId);
   if (published)
