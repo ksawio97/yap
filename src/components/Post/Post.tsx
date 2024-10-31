@@ -13,6 +13,8 @@ import useTimeAgo from "@/yap/libs/hooks/useTimeAgo";
 import PostReply from "./PostReply";
 import ReplyForm from "./ReplyForm";
 import DisappearOnMouseLeaveAfterDelay from "../Wrappers/DisappearOnMouseLeaveAfterDelay";
+import ThreeDotsIcon from "../icons/ThreeDotsIcon";
+import PostOptionsButton from "./PostOptionsButton";
 
 type PostProps = {
     post: PostModel | PostDetailedModel,
@@ -39,6 +41,9 @@ export default function Post({ post, additionalInfoListItems }: PostProps) {
                             <li>{timeAgo}</li>
                             {additionalInfoListItems}
                         </ul>
+                        <div className="ml-auto">
+                            <PostOptionsButton></PostOptionsButton>
+                        </div>
                     </div>
                     <p className="p-1 break-all">{post.content}</p>
                     <div className="grid grid-cols-4 md:px-8 py-2 text-gray-500">

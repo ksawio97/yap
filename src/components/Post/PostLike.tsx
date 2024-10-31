@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HoverIcon from "../icons/hover/HoverIcon";
 import LikeIcon from "../icons/LikeIcon";
 import ClickedLikeIcon from "../icons/ClickedLikeIcon";
-import { useLikeQueue } from "@/yap/libs/contexts/useLike";
+import { useLikeQueue } from "@/yap/libs/contexts/useLikeQueue";
 import { useSession } from "next-auth/react";
 
 export default function PostLike({ postId, likeCount, liked } : { postId: string, likeCount: string, liked: boolean}) {

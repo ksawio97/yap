@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import ChangeManager from "../ChangeManager";
 import useDynamicInterval from "@/yap/libs/hooks/useDynamicInterval";
-import { useSession } from "next-auth/react";
 
 // Define the shape of the context
 interface LikeQueueContextType {

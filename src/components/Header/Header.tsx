@@ -11,7 +11,7 @@ export default function Header() {
     return (
         <>
             <div className="h-24">
-                <header className="w-full h-24 bg-gray-900 sm:px-16 px-4 flex flex-row content-center items-center fixed top-0">
+                <header className="w-full h-24 bg-gray-900 sm:px-16 px-4 flex flex-row content-center items-center fixed top-0 z-50">
                     {/* items next to each other on the left */}
                     <div className="w-full h-full flex flex-row">
                         <Image
