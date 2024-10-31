@@ -13,16 +13,18 @@ import useTimeAgo from "@/yap/libs/hooks/useTimeAgo";
 import PostReply from "./PostReply";
 import ReplyForm from "./ReplyForm";
 import DisappearOnMouseLeaveAfterDelay from "../Wrappers/DisappearOnMouseLeaveAfterDelay";
-import ThreeDotsIcon from "../icons/ThreeDotsIcon";
 import PostOptionsButton from "./PostOptionsButton";
+import { useSession } from "next-auth/react";
 
 type PostProps = {
     post: PostModel | PostDetailedModel,
+    onPostSelfDelete: () => void,
     additionalInfoListItems?: ReactNode 
 }
 
-export default function Post({ post, additionalInfoListItems }: PostProps) {
+export default function Post({ post, onPostSelfDelete, additionalInfoListItems }: PostProps) {
     const router = useRouter();
+    const { data: session } = useSession();
     const { timeAgo } = useTimeAgo(new Date(post.published));
     const [showReplyForm, setShowReplyForm] = useState(false);
     
@@ -41,9 +43,13 @@ export default function Post({ post, additionalInfoListItems }: PostProps) {
                             <li>{timeAgo}</li>
                             {additionalInfoListItems}
                         </ul>
-                        <div className="ml-auto">
-                            <PostOptionsButton></PostOptionsButton>
-                        </div>
+                        { /* Show Post Options if user is its author */}
+                        { session?.user?.id && post.authorId === session.user.id && 
+                            <div className="ml-auto">
+                                <PostOptionsButton postId={post.id} onPostDelete={onPostSelfDelete}></PostOptionsButton>
+                            </div>
+                        }
+  
                     </div>
                     <p className="p-1 break-all">{post.content}</p>
                     <div className="grid grid-cols-4 md:px-8 py-2 text-gray-500">

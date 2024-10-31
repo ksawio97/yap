@@ -53,7 +53,7 @@ export default function PostDetails() {
                 <>
                     {!post ? <Loading></Loading> : 
                         <section id="post" className="py-4">
-                            <Post post={post} additionalInfoListItems={getAdditionalPostDetailedItemsList(post)}></Post>
+                            <Post post={post} additionalInfoListItems={getAdditionalPostDetailedItemsList(post)} onPostSelfDelete={() => router.push('/')}></Post>
                         </section>
                     }
                     <section id="replies">
